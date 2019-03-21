@@ -1,5 +1,5 @@
 start:
-		npx babel-node -- src/bin/server.js
+		npm run nodemon -- --exec babel-node src/bin/server.js
 
 install:
 		npm install

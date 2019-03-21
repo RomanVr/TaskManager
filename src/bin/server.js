@@ -1,4 +1,4 @@
-import solution from '../index';
+import solution from '../..';
 
 const PORT = process.env.PORT || 5000;
 solution().listen(PORT, () => {
