@@ -3,6 +3,7 @@ import Koa from 'koa';
 import KoaRouter from 'koa-router';
 import Pug from 'koa-pug';
 import bodyParser from 'koa-bodyparser';
+import serve from 'koa-static';
 
 import addRoutes from './routes';
 
@@ -11,6 +12,7 @@ export default () => {
   const router = new KoaRouter();
 
   app.use(bodyParser());
+  app.use(serve(path.join(__dirname, 'public')));
 
   addRoutes(router);
   app.use(router.routes());

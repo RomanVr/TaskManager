@@ -12,7 +12,7 @@
   "scripts": {
     "eslint": "eslint",
     "start": "babel-node -- src/bin/server.js",
-    "build": "npx webpack -p --env production",  
+    "build": "webpack -p --env production",
     "babel-node": "babel-node",
     "nodemon": "nodemon",
     "test": "test"
@@ -38,13 +38,17 @@
     "webpack-cli": "^3.3.0"
   },
   "dependencies": {
+    "babel-loader": "^8.0.5",
     "bootstrap": "^4.3.1",
+    "css-loader": "^2.1.1",
     "express": "^4.16.4",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
     "koa-pug": "^3.0.0-2",
     "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0",
     "pug": "^2.0.3",
+    "style-loader": "^0.23.1",
     "webpack": "^4.29.6"
   }
 }
