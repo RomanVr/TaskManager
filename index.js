@@ -4,7 +4,7 @@ import KoaRouter from 'koa-router';
 import Pug from 'koa-pug';
 import bodyParser from 'koa-bodyparser';
 import serve from 'koa-static';
-import rollbar from 'rollbar';
+import Rollbar from 'rollbar';
 
 import addRoutes from './routes';
 
@@ -12,6 +12,7 @@ export default () => {
   const app = new Koa();
   const router = new KoaRouter();
 
+  const rollbar = new Rollbar('POST_SERVER_ITEM_ACCESS_TOKEN');
   app.use(async (ctx, next) => {
     try {
       await next();
