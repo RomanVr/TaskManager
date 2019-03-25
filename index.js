@@ -4,12 +4,21 @@ import KoaRouter from 'koa-router';
 import Pug from 'koa-pug';
 import bodyParser from 'koa-bodyparser';
 import serve from 'koa-static';
+import rollbar from 'rollbar';
 
 import addRoutes from './routes';
 
 export default () => {
   const app = new Koa();
   const router = new KoaRouter();
+
+  app.use(async (ctx, next) => {
+    try {
+      await next();
+    } catch (err) {
+      rollbar.error(err, ctx.request);
+    }
+  });
 
   app.use(bodyParser());
   app.use(serve(path.join(__dirname, 'public')));
@@ -24,6 +33,5 @@ export default () => {
     pretty: true,
   });
   pug.use(app);
-  
   return app;
 };
