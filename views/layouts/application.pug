@@ -1,8 +1,29 @@
 doctype html
+
 html
   head
    title= 'Task Manager'
    script(src='/assets/main.js')
   body
-    
-    block content
+    nav.navbar.navbar-expand-md.navbar-dark.bg-dark
+      a.navbar-brand(href="/") RomanVr
+      form.form-inline.ml-auto(action='#')
+        input.form-control.mr-sm-2(type='text' placeholder='Search')
+        button.btn.btn-success(type='submit') Search
+      button.navbar-toggler(type='button' data-toggle='collapse' data-target='#collapsibleNavbar')
+        span.navbar-toggler-icon
+      div.collapse.navbar-collapse.justify-content-between#collapsibleNavbar
+        ul.navbar-nav
+          li.nav-item
+            a.nav-link(href="#") Write Post
+          li.nav-item
+            a.nav-link(href="#") My Posts
+          li.nav-item.dropdown
+            a.nav-link.dropdown-toggle(href='#' #navbardrop data-toggle='dropdown') Dropdown link
+              div.dropdown-menu
+                  a.dropdown-item(href='#') Link 1
+                  a.dropdown-item(href='#') Link 2
+                  a.dropdown-item(href='#') Link 3                  
+    div.container
+      .mt-1
+        block content

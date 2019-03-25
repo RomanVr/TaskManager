@@ -38,15 +38,20 @@
     "webpack-cli": "^3.3.0"
   },
   "dependencies": {
+    "autoprefixer": "^9.5.0",
     "babel-loader": "^8.0.5",
     "bootstrap": "^4.3.1",
     "css-loader": "^2.1.1",
     "express": "^4.16.4",
+    "jquery": "^3.3.1",
+    "jquery-ujs": "^1.2.2",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
     "koa-pug": "^3.0.0-2",
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
+    "popper.js": "^1.14.7",
+    "postcss-loader": "^3.0.0",
     "pug": "^2.0.3",
     "style-loader": "^0.23.1",
     "webpack": "^4.29.6"
