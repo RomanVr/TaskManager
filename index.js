@@ -5,14 +5,21 @@ import Pug from 'koa-pug';
 import bodyParser from 'koa-bodyparser';
 import serve from 'koa-static';
 import Rollbar from 'rollbar';
+import dotenv from 'dotenv';
 
 import addRoutes from './routes';
 
 export default () => {
+  dotenv.config();
+
   const app = new Koa();
   const router = new KoaRouter();
 
-  const rollbar = new Rollbar('POST_SERVER_ITEM_ACCESS_TOKEN');
+  const rollbar = new Rollbar({
+    accessToken: 'POST_SERVER_ITEM_ACCESS_TOKEN',
+    captureUncaught: true,
+    captureUnhandledRejections: true,
+  });
   app.use(async (ctx, next) => {
     try {
       await next();
@@ -34,6 +41,5 @@ export default () => {
     pretty: true,
   });
   pug.use(app);
-
   return app;
 };
