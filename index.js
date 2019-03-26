@@ -34,5 +34,6 @@ export default () => {
     pretty: true,
   });
   pug.use(app);
+
   return app;
 };

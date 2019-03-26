@@ -6,24 +6,12 @@ html
    script(src='/assets/main.js')
   body
     nav.navbar.navbar-expand-md.navbar-dark.bg-dark
-      a.navbar-brand(href="/") Task Manager
-      form.form-inline.ml-auto(action='#')
-        input.form-control.mr-sm-2(type='text' placeholder='Search')
-        button.btn.btn-success(type='submit') Search
+      a.navbar-brand(href="/") Task Manager      
       button.navbar-toggler(type='button' data-toggle='collapse' data-target='#collapsibleNavbar')
         span.navbar-toggler-icon
       div.collapse.navbar-collapse.justify-content-between#collapsibleNavbar
         ul.navbar-nav
           li.nav-item
-            a.nav-link(href="#") Link 1
-          li.nav-item
-            a.nav-link(href="#") Link 2
-          li.nav-item.dropdown
-            a.nav-link.dropdown-toggle(href='#' #navbardrop data-toggle='dropdown') Dropdown link
-              div.dropdown-menu
-                a.dropdown-item(href='#') Link 1
-                a.dropdown-item(href='#') Link 2
-                a.dropdown-item(href='#') Link 3                  
+            a.nav-link(href="#") Link 1                          
     div.container
-      .mt-1
-        block content
+      block content
