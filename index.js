@@ -33,6 +33,7 @@ export default () => {
 
   addRoutes(router);
   app.use(router.routes());
+
   const pug = new Pug({
     viewPath: path.join(__dirname, 'views'),
     basedir: path.join(__dirname, 'views'),
