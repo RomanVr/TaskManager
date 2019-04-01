@@ -1,7 +1,8 @@
+import Sequelize from 'sequelize';
 import { encrypt } from '../lib/secure';
 
 export default (sequelize, DataTypes) => {
-  class User extends sequelize.Model {
+  class User extends Sequelize.Model {
     get fullName() {
       return `${this.firstName} ${this.lastName}`;
     }

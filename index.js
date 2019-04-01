@@ -3,6 +3,7 @@ import Koa from 'koa';
 import KoaRouter from 'koa-router';
 import Pug from 'koa-pug';
 import bodyParser from 'koa-bodyparser';
+import methodOverride from 'koa-methodoverride';
 import serve from 'koa-static';
 import Rollbar from 'rollbar';
 import dotenv from 'dotenv';
@@ -29,6 +30,12 @@ export default () => {
   });
 
   app.use(bodyParser());
+  app.use(methodOverride((req) => {
+    if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+      return req.body._method;// eslint-disable-line
+    }
+    return null;
+  }));
   app.use(serve(path.join(__dirname, 'public')));
 
   addRoutes(router);

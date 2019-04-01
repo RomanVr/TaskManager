@@ -8,7 +8,14 @@ const config = Config[env];
 const db = {};
 
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
-
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Success connection!!!');
+  })
+  .catch((err) => {
+    console.log('Failed connection!!!', err);
+  });
 const model = sequelize.import(path.join(__dirname, 'user.js'));
 db[model.name] = model;
 

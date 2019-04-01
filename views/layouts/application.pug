@@ -1,17 +1,18 @@
-doctype html
+include /mixins/forms.pug
 
-html
+doctype html
+html(lang='en')
   head
    title= 'Task Manager'
    script(src='/assets/main.js')
   body
     nav.navbar.navbar-expand-md.navbar-dark.bg-dark
-      a.navbar-brand(href="/") Task Manager      
+      a.navbar-brand(href="/") Task Manager
       button.navbar-toggler(type='button' data-toggle='collapse' data-target='#collapsibleNavbar')
         span.navbar-toggler-icon
       div.collapse.navbar-collapse.justify-content-between#collapsibleNavbar
         ul.navbar-nav
           li.nav-item
-            a.nav-link(href="#") Link 1                          
+            a.nav-link(href="/users") Users                        
     div.container
       block content
