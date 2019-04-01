@@ -1,25 +1,20 @@
-import db from '../models';
+import models from '../models';
 
 export default (router) => {
   router
     .get('users', '/users', async (ctx) => {
       console.log('in GET /users');
-      try {
-        const users = await db.User.findAll();
-        console.log(`Users: ${JSON.stringify(users)}`);
-        ctx.render('users/index', { users });
-      } catch (e) {
-        console.log(e);
-        ctx.render('users/index');
-      }
+      const users = await models.User.findAll();
+      console.log(`Users: ${JSON.stringify(users)}`);
+      ctx.render('users/index', { users });
     })
     .get('newUser', '/users/new', async (ctx) => {
-      const user = db.User.build();
+      const user = models.User.build();
       ctx.render('users/new', { f: user });
     })
     .post('users', '/users', async (ctx) => {
       const { request: { body: form } } = ctx;
-      const user = db.User.build(form);
+      const user = models.User.build(form);
       try {
         await user.save();
         // flash
