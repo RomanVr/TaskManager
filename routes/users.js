@@ -12,8 +12,7 @@ export default (router) => {
         console.log(e);
         ctx.render('users/index');
       }
-    });
-  /*
+    })
     .get('newUser', '/users/new', async (ctx) => {
       const user = db.User.build();
       ctx.render('users/new', { f: user });
@@ -29,5 +28,4 @@ export default (router) => {
         ctx.render('users/new', { f: { ...user, e } });
       }
     });
-    */
 };

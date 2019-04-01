@@ -17,6 +17,7 @@ sequelize
     console.log('Failed connection!!!', err);
   });
 const model = sequelize.import(path.join(__dirname, 'user.js'));
+console.log(`Model name load: ${model.name}`);
 db[model.name] = model;
 
 Object.keys(db).forEach((modelName) => {
