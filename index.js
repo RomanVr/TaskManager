@@ -5,8 +5,11 @@ import Pug from 'koa-pug';
 import bodyParser from 'koa-bodyparser';
 import methodOverride from 'koa-methodoverride';
 import serve from 'koa-static';
+import session from 'koa-generic-session';
+import flash from 'koa-flash-simple';
 import Rollbar from 'rollbar';
 import dotenv from 'dotenv';
+import _ from 'lodash';
 
 import addRoutes from './routes';
 
@@ -14,7 +17,17 @@ export default () => {
   dotenv.config();
 
   const app = new Koa();
-  const router = new KoaRouter();
+
+  app.keys = ['secret keys'];
+  app.use(session(app));
+  app.use(flash());
+  app.use(async (ctx, next) => {
+    ctx.state = {
+      flash: ctx.flash,
+      isSignedIn: () => ctx.session.userId !== undefined,
+    };
+    await next();
+  });
 
   const rollbar = new Rollbar({
     accessToken: 'POST_SERVER_ITEM_ACCESS_TOKEN',
@@ -38,6 +51,7 @@ export default () => {
   }));
   app.use(serve(path.join(__dirname, 'public')));
 
+  const router = new KoaRouter();
   addRoutes(router);
   app.use(router.routes());
 
@@ -47,6 +61,11 @@ export default () => {
     noCache: process.env.NODE_ENV === 'development',
     debug: true,
     pretty: true,
+    compileDebug: true,
+    helperPath: [
+      { _ },
+      { urlForRouter: (...args) => router.url(...args) },
+    ],
   });
   pug.use(app);
   return app;

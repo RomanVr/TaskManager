@@ -1,4 +1,5 @@
 import models from '../models';
+import buildFormObj from '../lib/formObjectBuilder';
 
 export default (router) => {
   router
@@ -10,17 +11,19 @@ export default (router) => {
     })
     .get('newUser', '/users/new', async (ctx) => {
       const user = models.User.build();
-      ctx.render('users/new', { f: user });
+      ctx.render('users/new', { f: buildFormObj(user) });
     })
     .post('users', '/users', async (ctx) => {
       const { request: { body: form } } = ctx;
+      console.log(`form data: ${JSON.stringify(form)}`);
       const user = models.User.build(form);
       try {
         await user.save();
         // flash
         ctx.redirect(router.url('root'));
       } catch (e) {
-        ctx.render('users/new', { f: { ...user, e } });
+        console.log(`error new User: ${JSON.stringify(e)}`);
+        ctx.render('users/new'/* , { f: buildFormObj(user, e) } */);
       }
     });
 };

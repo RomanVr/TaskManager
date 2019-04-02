@@ -10,9 +10,18 @@ html(lang='en')
       a.navbar-brand(href="/") Task Manager
       button.navbar-toggler(type='button' data-toggle='collapse' data-target='#collapsibleNavbar')
         span.navbar-toggler-icon
-      div.collapse.navbar-collapse.justify-content-between#collapsibleNavbar
-        ul.navbar-nav
+      div.collapse.navbar-collapse#collapsibleNavbar
+        ul.navbar-nav.mr-auto
           li.nav-item
-            a.nav-link(href="/users") Users                        
+            a.nav-link(href=urlForRouter('users')) Users
+        ul.navbar-nav
+          if isSignedIn()
+            li.nav-item
+              a.nav-link(href='/session' data-method='delete' rel='nofollow') Sign Out
+          else
+            li.nav-item
+              a.nav-link(href='/session/new') Sign In
+            li.nav-item
+              a.nav-link(href=urlForRouter('newUser')) Sign Up
     div.container
       block content

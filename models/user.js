@@ -11,7 +11,8 @@ export default (sequelize, DataTypes) => {
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
     email: {
-      type: DataTypes,
+      type: DataTypes.STRING,
+      allowNull: false,
       unique: true,
       validate: {
         isEmail: true,
@@ -35,6 +36,7 @@ export default (sequelize, DataTypes) => {
       },
     },
   }, {
+    freezeTableName: true,
     sequelize,
   });
 
