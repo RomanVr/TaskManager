@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import models from '../models';
 import buildFormObj from '../lib/formObjectBuilder';
 
@@ -14,16 +15,17 @@ export default (router) => {
       ctx.render('users/new', { f: buildFormObj(user) });
     })
     .post('users', '/users', async (ctx) => {
-      const { request: { body: form } } = ctx;
-      console.log(`form data: ${JSON.stringify(form)}`);
+      const { request: { body: { form } } } = ctx;
+      console.log(`body data: ${JSON.stringify(form)}`);
       const user = models.User.build(form);
+      console.log(`user post: ${JSON.stringify(user)}`);
       try {
         await user.save();
         // flash
         ctx.redirect(router.url('root'));
       } catch (e) {
-        console.log(`error new User: ${JSON.stringify(e)}`);
-        ctx.render('users/new'/* , { f: buildFormObj(user, e) } */);
+        console.log(`error new User: ${JSON.stringify(_.groupBy(e.errors, 'path').email)}`);
+        ctx.render('users/new', { f: buildFormObj(user, e) });
       }
     });
 };

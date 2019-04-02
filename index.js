@@ -18,17 +18,6 @@ export default () => {
 
   const app = new Koa();
 
-  app.keys = ['secret keys'];
-  app.use(session(app));
-  app.use(flash());
-  app.use(async (ctx, next) => {
-    ctx.state = {
-      flash: ctx.flash,
-      isSignedIn: () => ctx.session.userId !== undefined,
-    };
-    await next();
-  });
-
   const rollbar = new Rollbar({
     accessToken: 'POST_SERVER_ITEM_ACCESS_TOKEN',
     captureUncaught: true,
@@ -42,8 +31,20 @@ export default () => {
     }
   });
 
+  app.keys = ['secret keys'];
+  app.use(session(app));
+  app.use(flash());
+  app.use(async (ctx, next) => {
+    ctx.state = {
+      flash: ctx.flash,
+      isSignedIn: () => ctx.session.userId !== undefined,
+    };
+    await next();
+  });
+
   app.use(bodyParser());
   app.use(methodOverride((req) => {
+    console.log(`req.body: ${JSON.stringify(req.body)}`);
     if (req.body && typeof req.body === 'object' && '_method' in req.body) {
       return req.body._method;// eslint-disable-line
     }
@@ -68,5 +69,6 @@ export default () => {
     ],
   });
   pug.use(app);
+
   return app;
 };
