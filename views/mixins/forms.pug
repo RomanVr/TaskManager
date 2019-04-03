@@ -17,6 +17,6 @@ mixin input(f, property, options = { as: 'text'})
     if f.errors[property]
       .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
 
-mixin button(f, type = 'submit')
+mixin button(f = 'Save', btClass = 'btn btn-primary', type = 'submit')
   .form-group
-    input(class='btn btn-primary' type=`${type}` value=`Save`)
+    input(class=btClass type=`${type}` value=f)

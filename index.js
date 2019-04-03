@@ -43,13 +43,14 @@ export default () => {
   });
 
   app.use(bodyParser());
-  app.use(methodOverride((req) => {
-    console.log(`req.body: ${JSON.stringify(req.body)}`);
-    if (req.body && typeof req.body === 'object' && '_method' in req.body) {
-      return req.body._method;// eslint-disable-line
-    }
-    return null;
-  }));
+  app.use(methodOverride('_method'));
+  // app.use(methodOverride((req) => {
+  //   console.log(`req.body: ${JSON.stringify(req.body)}`);
+  //   if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+  //     return req.body._method;// eslint-disable-line
+  //   }
+  //   return null;
+  // }));
   app.use(serve(path.join(__dirname, 'public')));
 
   const router = new KoaRouter();
