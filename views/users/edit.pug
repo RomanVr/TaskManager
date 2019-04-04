@@ -1,0 +1,9 @@
+extends /layouts/application.pug
+
+block content
+  +formFor(f, { url: `/users/${userId}?_method=patch`, method: 'post' })
+    +input(f, 'email')
+    +input(f, 'firstName')
+    +input(f, 'lastName')
+    //- +input(f, 'password', { as: 'password' })
+    +button('Edit')    

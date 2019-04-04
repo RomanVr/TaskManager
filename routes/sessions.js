@@ -18,11 +18,12 @@ export default (router) => {
       });
       console.log(`Register user: ${JSON.stringify(user)}`);
       if (user && user.passwordDigest === encrypt(password)) {
+        console.log('Register success!');
         ctx.session.userId = user.id;
         ctx.redirect(router.url('root'));
         return;
       }
-
+      console.log('Register fail!!!');
       // flash
       ctx.render('sessions/new', { f: buildFormObj({ email }) });
     })

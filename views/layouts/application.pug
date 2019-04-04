@@ -12,13 +12,16 @@ html(lang='en')
         span.navbar-toggler-icon
       div.collapse.navbar-collapse#collapsibleNavbar
         ul.navbar-nav.mr-auto
-          if isAdmin()
-            li.nav-item
-              a.nav-link(href=urlForRouter('users')) Users
+          li.nav-item
+            a.nav-link(href=urlForRouter('users')) Users
         ul.navbar-nav
           if isSignedIn()
             li.nav-item
-              //- a.nav-link(href=`${urlForRouter('session')}?_method=delete` method='post' rel='nofollow') Sign Out
+              a.nav-link(href=`/users/${userId}/edit`) Edit
+            li.nav-item
+              form.form-inline.float-xs-right(action=`/users/${userId}?_method=delete` method='post')
+                +button('Delete', 'btn nav-link')              
+            li.nav-item              
               form.form-inline.float-xs-right(action=`${urlForRouter('session')}?_method=delete` method='post' rel='nofollow')
                 +button('Sign Out', 'btn nav-link')
           else
