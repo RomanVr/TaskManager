@@ -12,13 +12,15 @@ html(lang='en')
         span.navbar-toggler-icon
       div.collapse.navbar-collapse#collapsibleNavbar
         ul.navbar-nav.mr-auto
-          li.nav-item
-            a.nav-link(href=urlForRouter('users')) Users
+          if isAdmin()
+            li.nav-item
+              a.nav-link(href=urlForRouter('users')) Users
         ul.navbar-nav
           if isSignedIn()
             li.nav-item
+              //- a.nav-link(href=`${urlForRouter('session')}?_method=delete` method='post' rel='nofollow') Sign Out
               form.form-inline.float-xs-right(action=`${urlForRouter('session')}?_method=delete` method='post' rel='nofollow')
-                +button('Sign Out', 'nav-link bg-dark')
+                +button('Sign Out', 'btn nav-link')
           else
             li.nav-item
               a.nav-link(href=urlForRouter('newSession')) Sign In
