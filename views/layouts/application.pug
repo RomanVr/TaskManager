@@ -16,11 +16,13 @@ html(lang='en')
             a.nav-link(href=urlForRouter('users')) Users
         ul.navbar-nav
           if isSignedIn()
-            li.nav-item
-              a.nav-link(href=`/users/${userId}/edit`) Edit
-            li.nav-item
-              form.form-inline.float-xs-right(action=`/users/${userId}?_method=delete` method='post')
-                +button('Delete', 'btn nav-link')              
+            div.dropdown.open
+              a.btn.dropdown-toggle(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false') #{userFullName}
+                div.dropdown-menu.bg-dark(aria-labelledby='dropdownMenuButton')
+                  a.dropdown-item(href=`/users/${userId}/edit`) Edit
+                  a.dropdown-item
+                    form.form-inline.float-xs-right(action=`/users/${userId}?_method=delete` method='post')
+                      +button('Delete', 'btn nav-link')              
             li.nav-item              
               form.form-inline.float-xs-right(action=`${urlForRouter('session')}?_method=delete` method='post' rel='nofollow')
                 +button('Sign Out', 'btn nav-link')

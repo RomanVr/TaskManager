@@ -20,6 +20,7 @@ export default (router) => {
       if (user && user.passwordDigest === encrypt(password)) {
         console.log('Register success!');
         ctx.session.userId = user.id;
+        ctx.session.userFullName = user.fullName;
         ctx.redirect(router.url('root'));
         return;
       }

@@ -56,13 +56,14 @@ export default (router) => {
     })// редактирование
     .patch('editUserPatch', '/users/:id', async (ctx) => {
       const { id: userId } = ctx.params;
+      const { request: { body: { form } } } = ctx;
       const userUpdated = await models.User.findOne({
         where: {
           id: userId,
         },
       })
         .then((user) => {
-          user.update();
+          user.update(form);
         });
       console.log(`user for path: ${JSON.stringify(userUpdated)}`);
       ctx.redirect(router.url('root'));
