@@ -6,15 +6,15 @@ html(lang='en')
    title= 'Task Manager'
    script(src='/assets/main.js')
   body
-    nav.navbar.navbar-expand-md.navbar-ligth
+    nav.navbar.navbar-expand-md.navbar-ligth.bg-faded
       a.navbar-brand(href="/") Task Manager
       button.navbar-toggler(type='button' data-toggle='collapse' data-target='#collapsibleNavbar')
         span.navbar-toggler-icon
       div.collapse.navbar-collapse#collapsibleNavbar
         ul.navbar-nav.mr-auto
-          li.nav-item
+          li.nav-item.active
             a.nav-link(href=urlForRouter('users')) Users
-        ul.navbar-nav
+        ul.navbar-nav.navbar-right
           if isSignedIn()
             li.nav-item.dropdown
               a.nav-link.dropdown-toggle(data-toggle='dropdown' href='#' role='button' aria-haspopup='true' aria-expanded='false')
@@ -35,5 +35,8 @@ html(lang='en')
               a.nav-link(href=urlForRouter('newSession')) Sign In
             li.nav-item
               a.nav-link(href=urlForRouter('newUser')) Sign Up
-    div.container
+    .container
+      - const msg = flash.get() || 'Flash';
+      if msg
+        .alert.alert-info.m-3= msg
       block content

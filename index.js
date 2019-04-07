@@ -35,6 +35,7 @@ export default () => {
   app.use(session(app));
   app.use(flash());
   app.use(async (ctx, next) => {
+    console.log('flash get:', ctx.flash.get());
     ctx.state = {
       flash: ctx.flash,
       isSignedIn: () => ctx.session.userId !== undefined,

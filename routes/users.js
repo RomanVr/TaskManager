@@ -22,6 +22,7 @@ export default (router) => {
       try {
         await user.save();
         // flash
+        ctx.flash.set('User has been created');
         ctx.redirect(router.url('root'));
       } catch (e) {
         console.log(`error new User: ${JSON.stringify(_.groupBy(e.errors, 'path').email)}`);

@@ -26,6 +26,8 @@ export default (router) => {
       }
       console.log('Register fail!!!');
       // flash
+      console.log('flash: ', ctx.flash);
+      ctx.flash.set('email or password were wrong');
       ctx.render('sessions/new', { f: buildFormObj({ email }) });
     })
     .delete('session', '/session', (ctx) => {
