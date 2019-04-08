@@ -7,10 +7,5 @@ export default {
     storage: ':memory:',
     dialect: 'sqlite',
   },
-  production: {
-    username: 'root',
-    password: null,
-    database: 'db_production',
-    dialect: 'postgres',
-  },
+  production: process.env.DATABASE_URL,
 };

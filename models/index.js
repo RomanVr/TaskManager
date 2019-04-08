@@ -7,7 +7,7 @@ const config = Config[env];
 
 const db = {};
 
-const sequelize = new Sequelize(config.database, config.username, config.password, config);
+const sequelize = new Sequelize(config);
 sequelize
   .authenticate()
   .then(() => {
