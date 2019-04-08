@@ -5,7 +5,7 @@ import models from '../models';
 export default (router) => {
   router
     .get('newSession', '/session/new', async (ctx) => {
-      const data = {};
+      const data = { email: ctx.session.userEmail };
       ctx.render('sessions/new', { f: buildFormObj(data) });
     })
     .post('session', '/session', async (ctx) => {
@@ -28,7 +28,8 @@ export default (router) => {
       // flash
       console.log('flash: ', ctx.flash);
       ctx.flash.set('email or password were wrong');
-      ctx.render('sessions/new', { f: buildFormObj({ email }) });
+      ctx.session.userEmail = email;
+      ctx.redirect(router.url('newSession'));
     })
     .delete('session', '/session', (ctx) => {
       ctx.session = {};

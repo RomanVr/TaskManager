@@ -1,4 +1,4 @@
-// const webpack = require('webpack');
+const webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
@@ -20,25 +20,14 @@ module.exports = {
         test: /\.css$/,
         use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
-      // {
-      //   loader: 'postcss-loader',
-      //   options: {
-      //     plugins: [
-      //       autoprefixer({
-      //         browsers: ['ie >= 8', 'last 4 version'],
-      //       }),
-      //     ],
-      //     sourceMap: true,
-      //   },
-      // },
     ],
   },
-  // plugins: [
-  //   new webpack.ProvidePlugin({
-  //     $: 'jquery',
-  //     jQuery: 'jquery',
-  //     'window.jQuery': 'jquery',
-  //     Popper: ['popper.js', 'default'],
-  //   }),
-  // ],
+  plugins: [
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery',
+      Popper: ['popper.js', 'default'],
+    }),
+  ],
 };

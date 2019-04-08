@@ -16,27 +16,24 @@ html(lang='en')
             a.nav-link(href=urlForRouter('users')) Users
         ul.navbar-nav.navbar-right
           if isSignedIn()
-            li.nav-item.dropdown
-              a.nav-link.dropdown-toggle(data-toggle='dropdown' href='#' role='button' aria-haspopup='true' aria-expanded='false')
-                | #{userFullName}
-              ul.dropdown-menu(aria-labelledby="dropdownMenuButton" role='menu')
-                li.dropdown-item
-                  a.nav-link(href=`/users/${userId}/edit`) Edit
-                li.dropdown-item
-                  form.form-inline(action=`/users/${userId}?_method=delete` method='post')
-                    .form-group
-                      input.nav-link.btn.btn-link(value='Delete' type='submit')              
-            li.nav-item              
-              form.float-xs-right.navbar-form(action=`${urlForRouter('session')}?_method=delete` method='post' rel='nofollow')
-                .form-group
-                  input.nav-link.btn.btn-link(value='Sign Out' type='submit')
+            li.nav-item
+              //- .dropdown
+              .btn-group
+                a.nav-link Logged in as #{userFullName}
+                a.nav-link.dropdown-toggle.dropdown-toggle-split(data-toggle='dropdown' href='#' aria-haspopup='true' aria-expanded='false')                  
+                  span.sr-only Toggle Dropdown
+                .dropdown-menu(aria-labelledby="dropdownMenuButton" role='menu')
+                  a.dropdown-item.nav-link(href=`/users/${userId}/edit`) Edit                
+                  a.dropdown-item.nav-link(href=`/users/${userId}` data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?') Delete                  
+            li.nav-item
+              a.nav-link(href= urlForRouter('session') data-method='delete' rel='nofollow' data-confirm='You want to log out?') Sign Out              
           else
             li.nav-item
               a.nav-link(href=urlForRouter('newSession')) Sign In
             li.nav-item
               a.nav-link(href=urlForRouter('newUser')) Sign Up
     .container
-      - const msg = flash.get() || 'Flash';
+      - const msg = flash.get()
       if msg
         .alert.alert-info.m-3= msg
       block content
