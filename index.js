@@ -2,6 +2,7 @@ import path from 'path';
 import Koa from 'koa';
 import KoaRouter from 'koa-router';
 import Pug from 'koa-pug';
+import koalogger from 'koa-logger';
 import bodyParser from 'koa-bodyparser';
 import methodOverride from 'koa-methodoverride';
 import serve from 'koa-static';
@@ -35,9 +36,6 @@ export default () => {
   app.use(session(app));
   app.use(flash());
   app.use(async (ctx, next) => {
-    // console.log('flash get:', ctx.flash.get());
-    // const { url, method } = ctx.request;
-    // console.log('request url: ', method, url);
     ctx.state = {
       flash: ctx.flash,
       isSignedIn: () => ctx.session.userId !== undefined,
@@ -49,7 +47,7 @@ export default () => {
 
   app.use(bodyParser());
   app.use(methodOverride((req) => {
-    console.log(`req.body: ${JSON.stringify(req.body)}`);
+    // console.log(`req.body: ${JSON.stringify(req.body)}`);
     if (req.body && typeof req.body === 'object' && '_method' in req.body) {
       return req.body._method;// eslint-disable-line
     }
@@ -57,6 +55,7 @@ export default () => {
   }));
   app.use(serve(path.join(__dirname, 'public')));
 
+  app.use(koalogger());
   const router = new KoaRouter();
   addRoutes(router);
   app.use(router.routes());

@@ -12,10 +12,10 @@
   "scripts": {
     "eslint": "eslint",
     "start": "babel-node -- src/bin/server.js",
-    "webpack": "webpack -p --env production",
+    "build": "npx webpack -p --env production",
     "babel-node": "babel-node",
     "nodemon": "nodemon",
-    "test": "test"
+    "test": "jest"
   },
   "keywords": [
     "heroku"
@@ -29,11 +29,13 @@
     "@babel/preset-env": "^7.3.4",
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.1",
+    "babel-jest": "^24.7.1",
     "eslint": "^5.15.3",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-jest": "^22.4.1",
+    "jest": "^24.7.1",
     "nodemon": "^1.18.10",
     "webpack-cli": "^3.3.0"
   },
@@ -43,14 +45,15 @@
     "bootstrap": "^4.3.1",
     "crypto": "^1.0.1",
     "css-loader": "^2.1.1",
+    "debug": "^4.1.1",
     "dotenv": "^7.0.0",
-    "express": "^4.16.4",
     "jquery": "^3.3.1",
     "jquery-ujs": "^1.2.2",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
     "koa-flash-simple": "0.0.3",
     "koa-generic-session": "^2.0.1",
+    "koa-logger": "^3.2.0",
     "koa-methodoverride": "^2.0.0",
     "koa-pug": "^3.0.0-2",
     "koa-router": "^7.4.0",
