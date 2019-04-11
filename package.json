@@ -17,6 +17,12 @@
     "nodemon": "nodemon",
     "test": "jest"
   },
+  "jest": {
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "<rootDir>/__tests__/__fixtures__"
+    ]
+  },
   "keywords": [
     "heroku"
   ],

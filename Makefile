@@ -13,9 +13,6 @@ test:
 test-coverage:
 		npm test -- --coverage
 
-testc:
-		sudo DEBUG=page-loader npm test -- --coverage
-
 build:
 		rm -rf dist
 		npx babel src --out-dir dist
