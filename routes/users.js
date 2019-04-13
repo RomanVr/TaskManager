@@ -7,7 +7,7 @@ export default (router) => {
       console.log('in GET /users');
       const users = await models.User.findAll();
       console.log(`Users: ${JSON.stringify(users)}`);
-      ctx.render('users/index', { users });
+      ctx.render('users', { users });
     })// форма создания
     .get('newUser', '/users/new', async (ctx) => {
       const user = models.User.build();
@@ -29,14 +29,15 @@ export default (router) => {
       }
     })// удаление
     .delete('deleteUser', '/users/:id', async (ctx) => {
-      const userIdsession = ctx.session.userId;
       // console.log('Session userId: ', userIdsession);
+      const userIdsession = ctx.session.userId;
       const { id: userId } = ctx.params;
       if (!userIdsession || userIdsession.toString() !== userId) {
         ctx.flash.set('You need to autenticate!');
-        ctx.redirect(router.url('root'));
+        ctx.redirect('/');
         return;
       }
+
       const user = await models.User.findOne({
         where: {
           id: userId,

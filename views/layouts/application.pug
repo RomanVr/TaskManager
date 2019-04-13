@@ -14,16 +14,17 @@ html(lang='en')
         ul.navbar-nav.mr-auto
           li.nav-item.active
             a.nav-link(href=urlForRouter('users')) Users
-        ul.navbar-nav.navbar-right
           if isSignedIn()
             li.nav-item
-              .btn-group
-                button.btn(type='button') Logged in as #{userFullName}
-                button.btn.dropdown-toggle.dropdown-toggle-split(type='button' data-toggle='dropdown' href='#' aria-haspopup='true' aria-expanded='false')                  
-                  span.sr-only Toggle Dropdown
-                .dropdown-menu(aria-labelledby="dropdownMenuButton" role='menu')
-                  a.dropdown-item(href=`/users/${userId}/edit`) Edit                
-                  a.dropdown-item(href=`/users/${userId}` data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?') Delete                  
+              a.nav-link(href=urlForRouter('tasks')) Tasks
+        ul.navbar-nav.navbar-right
+          if isSignedIn()
+            li.nav-item.dropdown
+              a.nav-link.dropdown-toggle(data-toggle='dropdown' role='button' href='#' aria-haspopup='true' aria-expanded='false')
+                | Logged in as #{userFullName}
+              .dropdown-menu
+                a.dropdown-item(href=`/users/${userId}/edit`) Edit                
+                a.dropdown-item(href=`/users/${userId}` data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?') Delete                              
             li.nav-item
               a.nav-link(href= urlForRouter('session') data-method='delete' rel='nofollow' data-confirm='You want to log out?') Sign Out              
           else
@@ -31,7 +32,7 @@ html(lang='en')
               a.nav-link(href=urlForRouter('newSession')) Sign In
             li.nav-item
               a.nav-link(href=urlForRouter('newUser')) Sign Up
-    .container
+    .container-fluid
       - const msg = flash.get()
       if msg
         .alert.alert-info.alert-dismissible.m-3(role='alert')= msg
