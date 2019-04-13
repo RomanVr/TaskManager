@@ -1,8 +1,6 @@
-import dotenv from 'dotenv';
+import '../../container';
 import solution from '../..';
 import models from '../../models';
-
-dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 

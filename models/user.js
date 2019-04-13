@@ -1,12 +1,13 @@
-import Sequelize from 'sequelize';
+import { Model } from 'sequelize';
 import { encrypt } from '../lib/secure';
 
 export default (sequelize, DataTypes) => {
-  class User extends Sequelize.Model {
+  class User extends Model {
     get fullName() {
       return `${this.firstName} ${this.lastName}`;
     }
   }
+
   User.init({
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
@@ -39,6 +40,11 @@ export default (sequelize, DataTypes) => {
     freezeTableName: true,
     sequelize,
   });
+
+  User.associate = function associate(models) {
+    models.User.hasMany(models.Task, { foreignKey: 'creator' });
+    models.User.hasMany(models.Task, { foreignKey: 'assignedToId' });
+  };
 
   return User;
 };

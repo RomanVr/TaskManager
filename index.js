@@ -9,14 +9,12 @@ import serve from 'koa-static';
 import session from 'koa-generic-session';
 import flash from 'koa-flash-simple';
 import Rollbar from 'rollbar';
-import dotenv from 'dotenv';
+import 'dotenv'; // run file
 import _ from 'lodash';
 
 import addRoutes from './routes';
 
 export default () => {
-  dotenv.config();
-
   const app = new Koa();
 
   const rollbar = new Rollbar({

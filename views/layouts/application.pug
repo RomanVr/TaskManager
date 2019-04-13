@@ -17,14 +17,13 @@ html(lang='en')
         ul.navbar-nav.navbar-right
           if isSignedIn()
             li.nav-item
-              //- .dropdown
               .btn-group
-                a.nav-link Logged in as #{userFullName}
-                a.nav-link.dropdown-toggle.dropdown-toggle-split(data-toggle='dropdown' href='#' aria-haspopup='true' aria-expanded='false')                  
+                button.btn(type='button') Logged in as #{userFullName}
+                button.btn.dropdown-toggle.dropdown-toggle-split(type='button' data-toggle='dropdown' href='#' aria-haspopup='true' aria-expanded='false')                  
                   span.sr-only Toggle Dropdown
                 .dropdown-menu(aria-labelledby="dropdownMenuButton" role='menu')
-                  a.dropdown-item.nav-link(href=`/users/${userId}/edit`) Edit                
-                  a.dropdown-item.nav-link(href=`/users/${userId}` data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?') Delete                  
+                  a.dropdown-item(href=`/users/${userId}/edit`) Edit                
+                  a.dropdown-item(href=`/users/${userId}` data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?') Delete                  
             li.nav-item
               a.nav-link(href= urlForRouter('session') data-method='delete' rel='nofollow' data-confirm='You want to log out?') Sign Out              
           else
@@ -35,5 +34,7 @@ html(lang='en')
     .container
       - const msg = flash.get()
       if msg
-        .alert.alert-info.m-3= msg
+        .alert.alert-info.alert-dismissible.m-3(role='alert')= msg
+          button.close(type='button' data-dismiss='alert' aria-label='close')
+            span(aria-hidden='true') &times;
       block content
