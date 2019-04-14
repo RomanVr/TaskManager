@@ -1,6 +1,7 @@
 extends /layouts/application.pug
 
 block content
+  p.text-center Create new user
   +formFor(f, { url: urlForRouter('users'), method: 'post' })
     +input(f, 'email')
     +input(f, 'firstName')

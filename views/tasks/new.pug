@@ -1,0 +1,9 @@
+extends /layouts/application.pug
+
+block content
+  p.text-center Create new task
+  +formFor(f, { url: urlForRouter('tasks'), method: 'post' })
+    +input(f, 'name')
+    +input(f, 'description')
+    +input(f, 'tags')
+    +button('Save')

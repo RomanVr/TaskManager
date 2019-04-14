@@ -9,10 +9,6 @@ export default (sequelize, DataTypes) => {
       allowNull: false,
     },
     description: DataTypes.STRING,
-    status: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
   }, {
     freezeTableName: true,
     // underscored: true,
@@ -22,27 +18,31 @@ export default (sequelize, DataTypes) => {
   Task.associate = function associate(models) {
     models.Task.belongsTo(models.User, {
       as: 'creator',
-      onDelete: 'RESTRICT',
       foreignKey: {
+        name: 'creatorId',
         allowNull: false,
       },
+      onDelete: 'RESTRICT',
     });
     models.Task.belongsTo(models.User, {
-      as: 'assignedTo',
+      as: 'assigned',
       onDelete: 'Set Null',
       foreignKey: {
+        name: 'assignedId',
         allowNull: true,
       },
     });
     models.Task.belongsToMany(models.Tag, {
-      as: 'Tags',
+      as: 'tags',
       through: 'TaskTags',
       onDelete: 'Set Null',
     });
-    models.Task.belongsToMany(models.TaskStatus, {
-      as: 'Statuses',
-      through: 'taskStatuses',
-      onDelete: 'Set Null',
+    models.Task.belongsTo(models.TaskStatus, {
+      as: 'status',
+      foreignKey: {
+        name: 'statusId',
+        allowNull: false,
+      },
     });
   };
 

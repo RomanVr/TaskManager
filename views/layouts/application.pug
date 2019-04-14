@@ -32,7 +32,7 @@ html(lang='en')
               a.nav-link(href=urlForRouter('newSession')) Sign In
             li.nav-item
               a.nav-link(href=urlForRouter('newUser')) Sign Up
-    .container-fluid
+    .container
       - const msg = flash.get()
       if msg
         .alert.alert-info.alert-dismissible.m-3(role='alert')= msg

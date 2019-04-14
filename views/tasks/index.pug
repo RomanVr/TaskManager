@@ -16,17 +16,18 @@ block content
                 th Name
                 th Assigned To
                 th Status
-                th CreatedAt
+                th Creator
             tbody
               if tasks.length === 0
                 tr
                   td.text-center(colspan='4') You have not tasks!
-              each task in tasks
-                tr                  
-                  td= task.name
-                  td= task.assignedTo
-                  td= task.status
-                  td= task.createdAt
+              esle
+                each task in tasks
+                  tr          
+                    td= task.name
+                    td
+                    td= task.status.name
+                    td= task.creator.fullName
       .col-lg-2.float-left.bg-ligth
         .list-group.border-1.d-flex
           span.list-group-item.text-center Filters:

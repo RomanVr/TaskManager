@@ -1,5 +1,5 @@
 import { Model } from 'sequelize';
-import statuses from './lib/taskStatus';
+import statuses from '../lib/taskStatus';
 
 console.log('statuses: ', statuses);
 
@@ -10,7 +10,6 @@ export default (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: statuses[0],
       validate: {
         isIn: [statuses],
       },
@@ -19,14 +18,6 @@ export default (sequelize, DataTypes) => {
     freezeTableName: true,
     sequelize,
   });
-
-  TaskStatus.associate = function associate(models) {
-    models.TaskStatus.belongsToMany(models.Task, {
-      as: 'Tasks',
-      through: 'taskStatuses',
-      onDelete: 'Set Null',
-    });
-  };
 
   return TaskStatus;
 };
