@@ -24,7 +24,8 @@ block content
               esle
                 each task in tasks
                   tr          
-                    td= task.name
+                    td
+                      a(href=`/tasks/${task.id}/edit`)= task.name
                     td
                     td= task.status.name
                     td= task.creator.fullName

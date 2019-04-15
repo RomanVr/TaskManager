@@ -36,7 +36,20 @@ export default (router) => {
       }
       const { request: { body: { form } } } = ctx;
       console.log(`body data: ${JSON.stringify(form)}`);
+
+      console.log('tagsForm: ', form.tags);
+      const regComma = /\s*,\s*/;
+      const tagsName = form.tags.split(regComma);
+      console.log('tagsName: ', tagsName);
       const task = models.Task.build(form);
+
+      const tags = tagsName.map(async (name) => {
+        const [tag] = await models.Tag.findOrCreate({ where: { name } });
+        return tag;
+      });
+      console.log('tags: ', tags);
+      task.setTags(tags);
+
       const user = await models.User.findOne({ where: { id: userIdsession } });
       try {
         task.setCreator(user);
@@ -44,6 +57,8 @@ export default (router) => {
       } catch (e) {
         console.log('Set creator error: ', e);
       }
+
+
       const [statusNew, created] = await models.TaskStatus.findOrCreate({ where: { name: 'New' } });
       console.log('Satus new created: ', created);
       try {
@@ -59,5 +74,14 @@ export default (router) => {
         console.log('Error new Task: ', e);
         ctx.render('tasks/new', { f: buildFormObj(task, e) });
       }
+    })
+    .get('editTask', '/tasks/:id/edit', async (ctx) => {
+      const { id: taskId } = ctx.params;
+      const task = await models.Task.findOne({
+        where: {
+          id: taskId,
+        },
+      });
+      ctx.render('task/edit', { f: buildFormObj(task) });
     });
 };
