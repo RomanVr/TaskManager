@@ -12,7 +12,7 @@ export default (router) => {
       }
 
       console.log('in Get /tasks');
-      const tasks = await models.Task.findAll({ include: ['status', 'creator'] });
+      const tasks = await models.Task.findAll({ include: ['status', 'creator', 'tags'] });
 
       ctx.render('tasks', { tasks });
     })
@@ -76,12 +76,18 @@ export default (router) => {
       }
     })
     .get('editTask', '/tasks/:id/edit', async (ctx) => {
+      console.log('In edit Task');
       const { id: taskId } = ctx.params;
-      const task = await models.Task.findOne({
-        where: {
-          id: taskId,
-        },
-      });
-      ctx.render('task/edit', { f: buildFormObj(task) });
+      let task;
+      try {
+        task = await models.Task.findOne({
+          where: { id: taskId },
+          include: ['tags'],
+        });
+        console.log(task.getTags({ plain: true }));
+      } catch (e) {
+        console.log('Error tast findOne: ', e);
+      }
+      ctx.render('tasks/edit', { f: buildFormObj(task.get({ plain: true })) });
     });
 };
