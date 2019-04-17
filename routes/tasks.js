@@ -12,7 +12,7 @@ export default (router) => {
       }
 
       console.log('in Get /tasks');
-      const tasks = await models.Task.findAll({ include: ['status', 'creator'] });
+      const tasks = await models.Task.findAll({ include: ['status', 'creator', 'tags'] });
 
       ctx.render('tasks', { tasks });
     })
@@ -45,10 +45,11 @@ export default (router) => {
 
       const tags = tagsName.map(async (name) => {
         const [tag] = await models.Tag.findOrCreate({ where: { name } });
+        console.log('tag: ', tag.get({ plain: true }));
         return tag;
       });
       console.log('tags: ', tags);
-      task.setTags(tags);
+      task.addTags(tags);
 
       const user = await models.User.findOne({ where: { id: userIdsession } });
       try {
@@ -57,7 +58,6 @@ export default (router) => {
       } catch (e) {
         console.log('Set creator error: ', e);
       }
-
 
       const [statusNew, created] = await models.TaskStatus.findOrCreate({ where: { name: 'New' } });
       console.log('Satus new created: ', created);
@@ -68,6 +68,10 @@ export default (router) => {
       }
       try {
         await task.save();
+        console.log('task save', task.get({
+          include: ['status', 'creator', 'tags'],
+          plain: true,
+        }));
         ctx.flash.set('Task has been created');
         ctx.redirect(router.url('tasks'));
       } catch (e) {
@@ -78,10 +82,10 @@ export default (router) => {
     .get('editTask', '/tasks/:id/edit', async (ctx) => {
       const { id: taskId } = ctx.params;
       const task = await models.Task.findOne({
-        where: {
-          id: taskId,
-        },
+        where: { id: taskId },
+        include: ['status', 'creator', 'tags'],
       });
-      ctx.render('task/edit', { f: buildFormObj(task) });
+      console.log('task ', taskId, ': \n', task.get({ plain: true }));
+      ctx.render('tasks/edit', { f: buildFormObj(task) });
     });
 };
