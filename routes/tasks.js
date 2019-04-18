@@ -43,11 +43,8 @@ export default (router) => {
       console.log('tagsName: ', tagsName);
       const task = models.Task.build(form);
 
-      const tags = await tagsName.map(async (name) => {
-        const [tag] = await models.Tag.findOrCreate({ where: { name } });
-        return tag;
-      });
-      console.log('create tags: ', tags);
+      // const [tagOne] = await models.Tag.findOrCreate({ where: { name: 'simple' } });
+      // const tags = [tagOne];
 
       const user = await models.User.findOne({ where: { id: userIdsession } });
       try {
@@ -66,7 +63,12 @@ export default (router) => {
       }
       try {
         await task.save();
-        await task.setTags(tags);
+        // for (let nameTag of tagsName) {
+        //   const [tag, createdTag] = await models.Tag.findOrCreate({ where: { name: nameTag } });
+        //   console.log('tag created: ', createdTag, ' name', nameTag);
+        //   await task.addTags([tag]);
+        // };
+
         console.log('task save: ', task.get({ include: ['status', 'creator', 'tags'] }));
         ctx.flash.set('Task has been created');
         ctx.redirect(router.url('tasks'));
