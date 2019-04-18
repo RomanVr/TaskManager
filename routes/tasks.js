@@ -43,12 +43,11 @@ export default (router) => {
       console.log('tagsName: ', tagsName);
       const task = models.Task.build(form);
 
-      const tags = tagsName.map(async (name) => {
+      const tags = await tagsName.map(async (name) => {
         const [tag] = await models.Tag.findOrCreate({ where: { name } });
         return tag;
       });
-      console.log('tags: ', tags);
-      task.setTags(tags);
+      console.log('create tags: ', tags);
 
       const user = await models.User.findOne({ where: { id: userIdsession } });
       try {
@@ -57,7 +56,6 @@ export default (router) => {
       } catch (e) {
         console.log('Set creator error: ', e);
       }
-
 
       const [statusNew, created] = await models.TaskStatus.findOrCreate({ where: { name: 'New' } });
       console.log('Satus new created: ', created);
@@ -68,6 +66,8 @@ export default (router) => {
       }
       try {
         await task.save();
+        await task.setTags(tags);
+        console.log('task save: ', task.get({ include: ['status', 'creator', 'tags'] }));
         ctx.flash.set('Task has been created');
         ctx.redirect(router.url('tasks'));
       } catch (e) {
@@ -82,9 +82,9 @@ export default (router) => {
       try {
         task = await models.Task.findOne({
           where: { id: taskId },
-          include: ['tags'],
+          include: ['creator', 'tags'],
         });
-        console.log(task.getTags({ plain: true }));
+        console.log(task.get({ plain: true }));
       } catch (e) {
         console.log('Error tast findOne: ', e);
       }
