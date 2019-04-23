@@ -3,14 +3,14 @@ extends /layouts/application.pug
 block content
   if isSignedIn()
     .row.d-flex
-      .col-lg-2.float-left.text-center
+      .col-md-2.float-left.text-center
         .list-group.card.text-md-left
           a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href='/tasks/new')            
             span.d-none.d-md-inline New Task
           a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href=`/tasks/users/${userId}`)            
             span.d-none.d-md-inline Me Tasks
-      .col-lg-8.border-1
-        table.table.table-striped.rounded.jumbotron
+      .col-md-8.border-1
+        table.table.table-striped.table-bordered.rounded.jumbotron
             thead.thead-dark
               tr
                 th Name
@@ -29,7 +29,7 @@ block content
                     td
                     td= task.status.name
                     td= task.creator.fullName
-      .col-lg-2.float-left.bg-ligth
+      .col-md-2.float-left.bg-ligth
         .list-group.border-1.d-flex
           span.list-group-item.text-center Filters:
           form(action='/tasks/filter' method='post')

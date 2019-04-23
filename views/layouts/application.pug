@@ -4,35 +4,43 @@ doctype html
 html(lang='en')
   head
    title= 'Task Manager'
+   meta(name='viewport' content='width=device-width, initial-scale=1')
    script(src='/assets/main.js')
   body
-    nav.navbar.navbar-expand-md.navbar-ligth.bg-faded
-      a.navbar-brand(href="/") Task Manager
-      button.navbar-toggler(type='button' data-toggle='collapse' data-target='#collapsibleNavbar')
-        span.navbar-toggler-icon
+    nav.navbar.navbar-expand-sm.navbar-light.bg-secondary
+      a.navbar-brand.text-white(href="/") Task Manager
+      button.navbar-toggler.text-white(type='button' data-toggle='collapse' data-target='#collapsibleNavbar')
+        span.navbar-toggler-icon.text-white
       div.collapse.navbar-collapse#collapsibleNavbar
         ul.navbar-nav.mr-auto
           li.nav-item.active
-            a.nav-link(href=urlForRouter('users')) Users
+            a.nav-link.text-white(href=urlForRouter('users')) Users
           if isSignedIn()
             li.nav-item
-              a.nav-link(href=urlForRouter('tasks')) Tasks
+              a.nav-link.text-white(href=urlForRouter('tasks')) Tasks
         ul.navbar-nav.navbar-right
           if isSignedIn()
-            li.nav-item.dropdown
-              a.nav-link.dropdown-toggle(data-toggle='dropdown' role='button' href='#' aria-haspopup='true' aria-expanded='false')
-                | Logged in as #{userFullName}
-              .dropdown-menu
-                a.dropdown-item(href=`/users/${userId}/edit`) Edit                
-                a.dropdown-item(href=`/users/${userId}` data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?') Delete                              
+            li.nav-item.btn-group
+              button.nav-link.btn.btn-secondary.text-white Logged in as 
+                span.text-info #{userFullName}
+              button.nav-link.btn.btn-secondary.dropdown-toggle.dropdown-toggle-split(type='button' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+                .dropdown-menu
+                  a.dropdown-item(href=`/users/${userId}/edit`) Edit                
+                  a.dropdown-item(href=`/users/${userId}` data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?') Delete
+            //- li.nav-item.dropdown
+            //-   a.nav-link.text-white.dropdown-toggle(data-toggle='dropdown' role='button' href='#' aria-haspopup='true' aria-expanded='false')
+            //-     | Logged in as #{userFullName}
+            //-   .dropdown-menu.bg-secondary
+            //-     a.dropdown-item(href=`/users/${userId}/edit`) Edit                
+            //-     a.dropdown-item(href=`/users/${userId}` data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?') Delete                              
             li.nav-item
-              a.nav-link(href= urlForRouter('session') data-method='delete' rel='nofollow' data-confirm='You want to log out?') Sign Out              
+              a.nav-link.text-white(href= urlForRouter('session') data-method='delete' rel='nofollow' data-confirm='You want to log out?') Sign Out              
           else
             li.nav-item
               a.nav-link(href=urlForRouter('newSession')) Sign In
             li.nav-item
               a.nav-link(href=urlForRouter('newUser')) Sign Up
-    .container
+    .container-flex
       - const msg = flash.get()
       if msg
         .alert.alert-info.alert-dismissible.m-3(role='alert')= msg
