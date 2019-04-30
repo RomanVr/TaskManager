@@ -62,15 +62,26 @@ export default (router) => {
         await task.save();
         // const [tagOne] = await models.Tag.findOrCreate({ where: { name: 'simple' } });
         // const tags = [tagOne];
+        // -- version 1 error: SQLITE_BUSY: data base is locked
+        // const tagsPromises = tagsName.map(async (nameTag) => {
+        //   const [tag, createdTag] = await models.Tag.findOrCreate({ where: { name: nameTag } });
+        //   console.log('tag created: ', createdTag, ' name', nameTag);
+        //   await task.addTags([tag]);
+        // });
+        // await Promise.all(tagsPromises);
 
         const tagsPromises = tagsName.map(async (nameTag) => {
-          const [tag, createdTag] = await models.Tag.findOrCreate({ where: { name: nameTag } });
-          console.log('tag created: ', createdTag, ' name', nameTag);
-          await task.addTags([tag]);
+          let tag = await models.Tag.findOne({ where: { name: nameTag } });
+          if (tag === null) {
+            tag = await models.Tag.create({ name: nameTag });
+          }
+          return tag;
         });
-        await Promise.all(tagsPromises);
 
-        // const [tag, createdTag] = await models.Tag.findOrCreate({ where: { name: tagsName[0] } });
+        console.log('tags: ', await Promise.all(tagsPromises));
+
+        // const [tag, createdTag]
+        //    = await models.Tag.findOrCreate({ where: { name: tagsName[0] } });
         // console.log('tag created: ', createdTag, ' name', tagsName[0]);
         // await task.addTags([tag]);
 
