@@ -40,7 +40,7 @@ html(lang='en')
               a.nav-link(href=urlForRouter('newSession')) Sign In
             li.nav-item
               a.nav-link(href=urlForRouter('newUser')) Sign Up
-    .container-flex
+    .container-flex.ml-2.mr-2.mt-2
       - const msg = flash.get()
       if msg
         .alert.alert-info.alert-dismissible.m-3(role='alert')= msg

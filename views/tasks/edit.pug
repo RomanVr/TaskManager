@@ -10,7 +10,15 @@ block content
           a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href=`/tasks/users/${userId}`)            
             span.d-none.d-md-inline Me Tasks
       .col-lg-8.border-1
-        
+        p.text-center Edit task
+        +formFor(f, { url: urlForRouter('tasks'), method: 'post' })
+          +input(f, 'name')
+          +input(f, 'description')
+          //- +input(f, 'tags')
+          +button('Save')
       .col-lg-2.float-left.bg-ligth
-        .list-group.border-1.d-flex
+        ul.list-group.border-1.d-flex
           span.list-group-item.text-center Tags:
+          each tag in f.object.tags
+            li.list-group-item.text-center #{tag.name}
+            
