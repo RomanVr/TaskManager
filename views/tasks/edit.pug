@@ -14,6 +14,9 @@ block content
         +formFor(f, { url: urlForRouter('tasks'), method: 'post' })
           +input(f, 'name')
           +input(f, 'description')
+          +input(f, 'status')
+          +input(f, 'assigned')
+          +input(f, 'creator')
           //- +input(f, 'tags')
           +button('Save')
       .col-lg-2.float-left.bg-ligth

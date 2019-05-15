@@ -2,7 +2,7 @@ import models from '../models';
 import buildFormObj from '../lib/formObjectBuilder';
 
 export default (router) => {
-  router
+  router // список задач
     .get('tasks', '/tasks', async (ctx) => {
       const userIdsession = ctx.session.userId;
       if (!userIdsession) {
@@ -15,7 +15,7 @@ export default (router) => {
       const tasks = await models.Task.findAll({ include: ['status', 'creator', 'tags'] });
 
       ctx.render('tasks', { tasks });
-    })
+    }) // форма для создания новой задачи
     .get('newTask', '/tasks/new', async (ctx) => {
       console.log('In newTask');
       const userIdsession = ctx.session.userId;
@@ -26,7 +26,7 @@ export default (router) => {
       }
       const task = models.Task.build();
       ctx.render('tasks/new', { f: buildFormObj(task) });
-    })
+    }) // создание новой задачи
     .post('tasks', '/tasks', async (ctx) => {
       const userIdsession = ctx.session.userId;
       if (!userIdsession) {
@@ -95,7 +95,7 @@ export default (router) => {
         console.log('Error new Task: ', e);
         ctx.render('tasks/new', { f: buildFormObj(task, e) });
       }
-    })
+    }) // форма редактирования задачи
     .get('editTask', '/tasks/:id/edit', async (ctx) => {
       console.log('In edit Task');
       const { id: taskId } = ctx.params;
@@ -103,12 +103,19 @@ export default (router) => {
       try {
         task = await models.Task.findOne({
           where: { id: taskId },
-          include: ['creator', 'tags'],
+          include: ['creator', 'tags', 'assigned', 'status'],
         });
         console.log(task.get({ plain: true }));
       } catch (e) {
         console.log('Error tast findOne: ', e);
       }
       ctx.render('tasks/edit', { f: buildFormObj(task.get({ plain: true })) });
-    });
+    }); // редактирование задачи
+  // .patch('editTaskPatch', '/tasks/:id', async (ctx) => {
+  //
+  // }) // удаление задачи
+  // .delete('deleteTask', '/tasks/:id', async (ctx) => {
+  //
+  // })
+  // ;
 };
