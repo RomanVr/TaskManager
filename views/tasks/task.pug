@@ -1,0 +1,40 @@
+extends /layouts/application.pug
+
+block content
+  if isSignedIn()
+    .row.d-flex
+      .col-lg-2.float-left.text-center
+        .list-group.card.text-md-left
+          a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href='/tasks/new')            
+            span.d-none.d-md-inline New Task
+          a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href=`/tasks/users/${userId}`)            
+            span.d-none.d-md-inline Me Tasks
+          a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href=`/tasks/${f.object.id}/edit`)
+            span.d-none.d-md-inline Edit Task
+          a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href=`/tasks/${f.object.id}` data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?')
+            span.d-none.d-md-inline Delete Task
+      .col-lg-8.border-1
+        p.text-center #{f.object.name}
+        table.table.table-striped.table-bordered.rounded.jumbotron
+          thead            
+          tbody
+            tr
+              th.col-2 Статус:
+              th.text-info #{f.object.status.name}
+            tr
+              th Назначена:
+              if f.object.assigned
+                th.text-info #{f.object.assigned.name}
+              else 
+                th.text-info -
+            tr
+              th Описание:
+              th.text-info #{f.object.description}
+            tr
+              th Создатель:
+              th.text-info #{f.object.creator.fullName}
+      .col-lg-2.float-left.bg-ligth
+        ul.list-group.border-1.d-flex
+          span.list-group-item.text-center Tags:
+          each tag in f.object.tags
+            li.list-group-item.text-center.text-info #{tag.name}

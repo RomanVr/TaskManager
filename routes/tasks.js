@@ -15,6 +15,21 @@ export default (router) => {
       const tasks = await models.Task.findAll({ include: ['status', 'creator', 'tags'] });
 
       ctx.render('tasks', { tasks });
+    })
+    .get('task', '/tasks/:id', async (ctx) => {
+      console.log('In Task');
+      const { id: taskId } = ctx.params;
+      let task;
+      try {
+        task = await models.Task.findOne({
+          where: { id: taskId },
+          include: ['creator', 'tags', 'assigned', 'status'],
+        });
+        console.log(task.get({ plain: true }));
+      } catch (e) {
+        console.log('Error task findOne: ', e);
+      }
+      ctx.render('tasks/task', { f: buildFormObj(task) });
     }) // форма для создания новой задачи
     .get('newTask', '/tasks/new', async (ctx) => {
       console.log('In newTask');
@@ -110,12 +125,32 @@ export default (router) => {
         console.log('Error tast findOne: ', e);
       }
       ctx.render('tasks/edit', { f: buildFormObj(task.get({ plain: true })) });
-    }); // редактирование задачи
-  // .patch('editTaskPatch', '/tasks/:id', async (ctx) => {
-  //
-  // }) // удаление задачи
-  // .delete('deleteTask', '/tasks/:id', async (ctx) => {
-  //
-  // })
-  // ;
+    }) // редактирование задачи
+    .patch('editTaskPatch', '/tasks/:id', async (ctx) => {
+
+    }) // удаление задачи
+    .delete('deleteTask', '/tasks/:id', async (ctx) => {
+      // console.log('Session userId: ', userIdsession);
+      // const userIdsession = ctx.session.userId;
+      const { id: taskId } = ctx.params;
+      // if (!userIdsession || userIdsession.toString() !== userId) {
+      //   ctx.flash.set('You need to autenticate!');
+      //   ctx.redirect('/');
+      //   return;
+      // }
+
+      const task = await models.Task.findOne({
+        where: {
+          id: taskId,
+        },
+      });
+
+      await models.Task.destroy({
+        where: {
+          id: task.id,
+        },
+      });
+
+      ctx.redirect(router.url('tasks'));
+    });
 };

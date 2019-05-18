@@ -20,20 +20,22 @@ html(lang='en')
               a.nav-link.text-white(href=urlForRouter('tasks')) Tasks
         ul.navbar-nav.navbar-right
           if isSignedIn()
-            li.nav-item.btn-group
-              button.nav-link.btn.btn-secondary.text-white Logged in as 
+            //- li.nav-item.btn-group
+            //-   button.nav-link.btn.btn-secondary.text-white Logged in as 
+            //-     span.text-info
+            //-       kbd #{userFullName}
+            //-   button.nav-link.btn.btn-secondary.dropdown-toggle.dropdown-toggle-split(type='button' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
+            //-     .dropdown-menu
+            //-       a.dropdown-item(href=`/users/${userId}/edit`) Edit                
+            //-       a.dropdown-item(href=`/users/${userId}` data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?') Delete
+            li.nav-item.dropdown
+              a.nav-link.text-white.dropdown-toggle(data-toggle='dropdown' role='button' href='#' aria-haspopup='true' aria-expanded='false')
+                | Logged in as 
                 span.text-info
-                  kbd #{userFullName}
-              button.nav-link.btn.btn-secondary.dropdown-toggle.dropdown-toggle-split(type='button' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
-                .dropdown-menu
-                  a.dropdown-item(href=`/users/${userId}/edit`) Edit                
-                  a.dropdown-item(href=`/users/${userId}` data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?') Delete
-            //- li.nav-item.dropdown
-            //-   a.nav-link.text-white.dropdown-toggle(data-toggle='dropdown' role='button' href='#' aria-haspopup='true' aria-expanded='false')
-            //-     | Logged in as #{userFullName}
-            //-   .dropdown-menu.bg-secondary
-            //-     a.dropdown-item(href=`/users/${userId}/edit`) Edit                
-            //-     a.dropdown-item(href=`/users/${userId}` data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?') Delete                              
+                    kbd #{userFullName}
+              .dropdown-menu.bg-secondary
+                a.dropdown-item(href=`/users/${userId}/edit`) Edit                
+                a.dropdown-item(href=`/users/${userId}` data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?') Delete                              
             li.nav-item
               a.nav-link.text-white(href= urlForRouter('session') data-method='delete' rel='nofollow' data-confirm='You want to log out?') Sign Out              
           else
