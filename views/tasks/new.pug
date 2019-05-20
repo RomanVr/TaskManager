@@ -5,5 +5,12 @@ block content
   +formFor(f, { url: urlForRouter('tasks'), method: 'post' })
     +input(f, 'name')
     +input(f, 'description')
+    //- +input(f, 'assigned')
+    +selectUser(f, 'assigned')
+    //- select.custom-selected(name='cars')
+    //-   option.selected Custom Select Menu
+    //-   option(value='volvo') Volvo
+    //-   option(value='fiat') Fiat
+    //-   option(value='audi') Audi    
     +input(f, 'tags')
     +button('Save')

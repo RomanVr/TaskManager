@@ -35,7 +35,7 @@ export default (sequelize, DataTypes) => {
     models.Task.belongsToMany(models.Tag, {
       as: 'tags',
       through: 'TaskTags',
-      onDelete: 'Set Null',
+      onDelete: 'CASCADE',
     });
     models.Task.belongsTo(models.TaskStatus, {
       as: 'status',

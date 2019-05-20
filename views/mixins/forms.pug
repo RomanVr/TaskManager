@@ -17,6 +17,16 @@ mixin input(f, property, options = { as: 'text'})
     if f.errors[property]
       .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
 
+mixin selectUser(f, property)
+  - const valueId = f.object[property] === undefined ? '' : f.object[property].id
+  - const valueFullName = f.object[property] === undefined ? '' : f.object[property].fullName
+  .form-group(class=(f.errors[property] && 'has-danger'))
+    label= property
+    select.custom-selected(name= getInputName(f, property))
+      option.selected(value= valueId)= valueFullName
+      each elem in data
+        option(value= elem.id)= elem.fullName        
+
 mixin button(f = 'Save', btClass = 'btn btn-primary', type = 'submit')
   .form-group
     input(class=btClass type=`${type}` value=f)
