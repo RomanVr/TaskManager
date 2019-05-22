@@ -40,9 +40,9 @@ html(lang='en')
               a.nav-link.text-white(href= urlForRouter('session') data-method='delete' rel='nofollow' data-confirm='You want to log out?') Sign Out              
           else
             li.nav-item
-              a.nav-link(href=urlForRouter('newSession')) Sign In
+              a.nav-link.text-white(href=urlForRouter('newSession')) Sign In
             li.nav-item
-              a.nav-link(href=urlForRouter('newUser')) Sign Up
+              a.nav-link.text-white(href=urlForRouter('newUser')) Sign Up
     .container-flex.ml-2.mr-2.mt-2
       - const msg = flash.get()
       if msg

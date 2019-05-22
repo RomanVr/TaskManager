@@ -15,18 +15,6 @@ export default (router) => {
       const tasks = await models.Task.findAll({ include: ['assigned', 'status', 'creator'] });
       console.log('tasks: ', tasks);
       ctx.render('tasks', { tasks });
-    }) // форма для создания новой задачи
-    .get('newTask', '/tasks/new', async (ctx) => {
-      console.log('In newTask');
-      const userIdsession = ctx.session.userId;
-      if (!userIdsession) {
-        ctx.flash.set('You need to autenticate!');
-        ctx.redirect('/');
-        return;
-      }
-      const task = models.Task.build();
-      const users = await models.User.findAll();
-      ctx.render('tasks/new', { f: buildFormObj(task), data: users });
     }) // форма просмотра задачи
     .get('task', '/tasks/:id', async (ctx) => {
       console.log('In Task');
@@ -42,6 +30,18 @@ export default (router) => {
         console.log('Error task findOne: ', e);
       }
       ctx.render('tasks/task', { f: buildFormObj(task) });
+    }) // форма для создания новой задачи
+    .get('newTask', '/tasks/new', async (ctx) => {
+      console.log('In newTask');
+      const userIdsession = ctx.session.userId;
+      if (!userIdsession) {
+        ctx.flash.set('You need to autenticate!');
+        ctx.redirect('/');
+        return;
+      }
+      const task = models.Task.build();
+      const users = await models.User.findAll();
+      ctx.render('tasks/new', { f: buildFormObj(task), data: users });
     }) // создание новой задачи
     .post('tasks', '/tasks', async (ctx) => {
       const userIdsession = ctx.session.userId;
@@ -119,17 +119,16 @@ export default (router) => {
     .get('editTask', '/tasks/:id/edit', async (ctx) => {
       console.log('In edit Task');
       const { id: taskId } = ctx.params;
-      let task;
-      try {
-        task = await models.Task.findOne({
-          where: { id: taskId },
-          include: ['creator', 'tags', 'assigned', 'status'],
-        });
-        console.log(task.get({ plain: true }));
-      } catch (e) {
-        console.log('Error tast findOne: ', e);
-      }
-      ctx.render('tasks/edit', { f: buildFormObj(task.get({ plain: true })) });
+
+      const task = await models.Task.findOne({
+        where: { id: taskId },
+        include: ['tags', 'assigned', 'status', 'creator'],
+      });
+      // console.log(task.get({ plain: true }));
+
+      const users = await models.User.findAll();
+      const statuses = await models.TaskStatus.findAll();
+      ctx.render('tasks/edit', { f: buildFormObj(task), data: { users, statuses } });
     }) // редактирование задачи
     // .patch('editTaskPatch', '/tasks/:id', async (ctx) => {
 

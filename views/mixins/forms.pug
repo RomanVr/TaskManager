@@ -13,20 +13,41 @@ mixin input(f, property, options = { as: 'text'})
   - const value = f.object[property] === undefined ? '' : f.object[property]
   .form-group(class=(f.errors[property] && 'has-danger'))
     label= property
-    input(name= getInputName(f, property) class='form-control' type=options['as'] value=`${value}`)
+    input.form-control(name= getInputName(f, property) type=options['as'] value=`${value}`)
     if f.errors[property]
       .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
 
-mixin selectUser(f, property)
-  - const valueId = f.object[property] === undefined ? '' : f.object[property].id
-  - const valueFullName = f.object[property] === undefined ? '' : f.object[property].fullName
+mixin textarea(f, property)
+  - const value = f.object[property] === undefined ? '' : f.object[property]
   .form-group(class=(f.errors[property] && 'has-danger'))
     label= property
-    select.custom-selected(name= getInputName(f, property))
-      option.selected(value= valueId)= valueFullName
-      each elem in data
-        option(value= elem.id)= elem.fullName        
+    textarea.form-control(name= getInputName(f, property))
+      | #{value}
+    if f.errors[property]
+      .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
 
+mixin select(f, property, data, propertyData)
+  - const valueId = f.object[property] === undefined ? '' : f.object[property].id
+  - const valueData = f.object[property] === undefined ? '' : f.object[property][propertyData]
+  .form-group(class= (f.errors[property] && 'has-danger'))
+    label= property
+    select.form-control.custom-selected(name= getInputName(f, property))
+      option.selected(value= valueId)= valueData
+      each elem in data
+        option(value= elem.id)= elem[propertyData]        
+    if f.errors[property]
+      .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
+      
+    mixin selectM(f, property)
+      - const valueData = f.object[property] === undefined ? '' : f.object[property]
+      .form-group(class= (f.errors[property] && 'has-danger'))
+        label= property
+        select.form-control(multiple name= getInputName(f, property))
+          each elem in valueData
+            option= elem.name       
+        if f.errors[property]
+          .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
+            
 mixin button(f = 'Save', btClass = 'btn btn-primary', type = 'submit')
   .form-group
     input(class=btClass type=`${type}` value=f)

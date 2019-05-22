@@ -3,25 +3,29 @@ extends /layouts/application.pug
 block content
   if isSignedIn()
     .row.d-flex
-      .col-lg-2.float-left.text-center
-        .list-group.card.text-md-left
+      .col-lg-2.text-center
+        .list-group.text-md-left
           a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href='/tasks/new')            
             span.d-none.d-md-inline New Task
           a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href=`/tasks/users/${userId}`)            
             span.d-none.d-md-inline Me Tasks
-      .col-lg-8.border-1
-        p.text-center Edit task
+      .col-lg-10.border-1
+        p.text-center Edit task, created by 
+          span.text-info #{f.object.creator.fullName}
         +formFor(f, { url: urlForRouter('tasks'), method: 'post' })
-          +input(f, 'name')
-          +input(f, 'description')
-          +input(f, 'status')
-          +input(f, 'assigned')
-          +input(f, 'creator')
-          //- +input(f, 'tags')
-          +button('Save')
-      .col-lg-2.float-left.bg-ligth
-        ul.list-group.border-1.d-flex
-          span.list-group-item.text-center Tags:
-          each tag in f.object.tags
-            li.list-group-item.text-center #{tag.name}
+          .row.d-flex
+            .col-lg-10
+              +input(f, 'name')
+              +textarea(f, 'description')
+              +select(f, 'status', data.statuses, 'name')
+              +select(f, 'assigned', data.users, 'fullName')
+              //- +input(f, 'creator')
+              //- +input(f, 'tags')
+              +button('Save')
+            .col-lg-2.bg-ligth.text-rigth
+              ul.list-group.border-1.d-flex
+                //- span.list-group-item.text-center Tags:
+                +selectM(f, 'tags')
+                //- each tag in f.object.tags
+                //-   li.list-group-item.text-center.text-info #{tag.name}
             
