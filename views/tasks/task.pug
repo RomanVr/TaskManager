@@ -37,4 +37,13 @@ block content
         ul.list-group.border-1.d-flex
           span.list-group-item.text-center Tags:
           each tag in f.object.tags
-            li.list-group-item.text-center.text-info #{tag.name}
+            li.list-group-item.d-flex.justify-content-between.align-items-center.text-info 
+                | #{tag.name}              
+                a(href=`/tags/${tag.id}/${f.object.id}` data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?')
+                  span.text-danger &times;
+          form(action=`/tags/${f.object.id}` method='post')
+            .input-group.d-flex.flex-column
+              li.list-group-item
+                input.form-control(name='form[name]' type='text')
+              li.list-group-item.d-flex
+                button.btn.btn-success.flex-fill(type='submit') add

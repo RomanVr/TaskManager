@@ -5,6 +5,6 @@ block content
   +formFor(f, { url: urlForRouter('tasks'), method: 'post' })
     +input(f, 'name')
     +textarea(f, 'description')
-    +selectUser(f, 'assigned')  
+    +select(f, 'assigned', data.users, 'fullName')  
     +input(f, 'tags')
     +button('Save')

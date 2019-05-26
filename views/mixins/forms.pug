@@ -31,7 +31,7 @@ mixin select(f, property, data, propertyData)
   - const valueData = f.object[property] === undefined ? '' : f.object[property][propertyData]
   .form-group(class= (f.errors[property] && 'has-danger'))
     label= property
-    select.form-control.custom-selected(name= getInputName(f, property))
+    select.form-control(name= getInputName(f, `${property}Id`))
       option.selected(value= valueId)= valueData
       each elem in data
         option(value= elem.id)= elem[propertyData]        

@@ -12,7 +12,7 @@ export default (router) => {
     .get('newUser', '/users/new', async (ctx) => {
       const user = models.User.build();
       ctx.render('users/new', { f: buildFormObj(user) });
-    })// обработка при создании
+    })// создание
     .post('users', '/users', async (ctx) => {
       const { request: { body: { form } } } = ctx;
       console.log(`body data: ${JSON.stringify(form)}`);

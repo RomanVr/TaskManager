@@ -12,20 +12,17 @@ block content
       .col-lg-10.border-1
         p.text-center Edit task, created by 
           span.text-info #{f.object.creator.fullName}
-        +formFor(f, { url: urlForRouter('tasks'), method: 'post' })
+        +formFor(f, { url: `/tasks/${f.object.id}`, method: 'patch' })
           .row.d-flex
             .col-lg-10
               +input(f, 'name')
               +textarea(f, 'description')
               +select(f, 'status', data.statuses, 'name')
               +select(f, 'assigned', data.users, 'fullName')
-              //- +input(f, 'creator')
-              //- +input(f, 'tags')
               +button('Save')
             .col-lg-2.bg-ligth.text-rigth
               ul.list-group.border-1.d-flex
-                //- span.list-group-item.text-center Tags:
-                +selectM(f, 'tags')
-                //- each tag in f.object.tags
-                //-   li.list-group-item.text-center.text-info #{tag.name}
+                span.list-group-item.text-center Tags:
+                each tag in f.object.tags
+                  li.list-group-item.text-center.text-info #{tag.name}
             
