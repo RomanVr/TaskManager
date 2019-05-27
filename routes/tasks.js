@@ -10,10 +10,31 @@ export default (router) => {
         ctx.redirect('/');
         return;
       }
-
+      const { Op } = models.Sequelize;
       console.log('in Get /tasks');
-      const tasks = await models.Task.findAll({ include: ['assigned', 'status', 'creator'] });
-      console.log('tasks: ', tasks);
+      console.log('Query params: ', ctx.query, ' type: ', typeof ctx.query, ' keys: ', Object.keys(ctx.query).length);
+      let tasks;
+      if (Object.keys(ctx.query).length !== 0) {
+        const {
+          name, tags, status, assignedTo,
+        } = ctx.query;
+        console.log('name: ', name, ' tags: ', tags, ' status: ', ' assignedTo: ', assignedTo);
+
+        tasks = await models.Task.findAll(
+          {
+            where: { name: 'New task' },
+            include: [
+              { model: models.User, as: 'assigned' },
+              { model: models.Tag, as: 'tags' },
+              { model: models.TaskStatus, as: 'status' },
+              { model: models.User, as: 'creator' },
+            ],
+          },
+        );
+      } else {
+        tasks = await models.Task.findAll({ include: ['assigned', 'tags', 'status', 'creator'] });
+      }
+      // console.log('tasks: ', tasks);
       ctx.render('tasks', { tasks });
     }) // форма для создания новой задачи
     .get('newTask', '/tasks/new', async (ctx) => {
@@ -37,7 +58,7 @@ export default (router) => {
           where: { id: taskId },
           include: ['creator', 'tags', 'assigned', 'status'],
         });
-        // console.log(task.get({ plain: true }));
+        console.log(task.get({ plain: true }));
       } catch (e) {
         console.log('Error task findOne: ', e);
       }

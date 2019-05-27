@@ -36,9 +36,9 @@ block content
       .col-md-2.float-left.bg-ligth
         .list-group.border-1.d-flex
           span.list-group-item.text-center Filters:
-          form(action='/tasks/filter' method='post')
+          form(action='/tasks' method='get')
             .form-group.list-group-item.d-inline-block
-              label Name
+              label Name task
               input.form-control(name='name' type='text')
             .form-group.list-group-item.d-inline-block
               label Tags
