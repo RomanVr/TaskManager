@@ -7,7 +7,7 @@ block content
         .list-group.card.text-md-left
           a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href=urlForRouter('newTask'))            
             span.d-none.d-md-inline New Task
-          a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href=`/tasks/users/${userId}`)            
+          a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href=`/tasks?meTask=yes`)            
             span.d-none.d-md-inline Me Tasks
       .col-md-8.border-1
         table.table.table-striped.table-bordered.rounded.jumbotron
@@ -39,15 +39,15 @@ block content
           form(action='/tasks' method='get')
             .form-group.list-group-item.d-inline-block
               label Name task
-              input.form-control(name='name' type='text')
+              input.form-control(name='nameTask' type='text')
             .form-group.list-group-item.d-inline-block
               label Tags
-              input.form-control(name='tags' type='text')
+              input.form-control(name='tagName' type='text')
             .form-group.list-group-item.d-inline-block
               label Status
-              input.form-control(name='status' type='text')
+              input.form-control(name='statusName' type='text')
             .form-group.list-group-item.d-inline-block
               label Assigned
-              input.form-control(name='assignedTo' type='text')
+              input.form-control(name='assignedName' type='text')
             .form-group.list-group-item.text-center
               input.btn.btn-primary(type='submit' value='Search')

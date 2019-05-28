@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import models from '../models';
 import buildFormObj from '../lib/formObjectBuilder';
 
@@ -14,25 +15,45 @@ export default (router) => {
       console.log('in Get /tasks');
       console.log('Query params: ', ctx.query, ' type: ', typeof ctx.query, ' keys: ', Object.keys(ctx.query).length);
       let tasks;
-      if (Object.keys(ctx.query).length !== 0) {
-        const {
-          name, tags, status, assignedTo,
-        } = ctx.query;
-        console.log('name: ', name, ' tags: ', tags, ' status: ', ' assignedTo: ', assignedTo);
-
+      if (_.isEmpty(ctx.query)) {
+        tasks = await models.Task.findAll({ include: ['assigned', 'tags', 'status', 'creator'] });
+      } else if (!_.isEmpty(ctx.query.meTask)) {
         tasks = await models.Task.findAll(
           {
-            where: { name: 'New task' },
             include: [
               { model: models.User, as: 'assigned' },
               { model: models.Tag, as: 'tags' },
               { model: models.TaskStatus, as: 'status' },
-              { model: models.User, as: 'creator' },
+              { model: models.User, as: 'creator', where: { id: userIdsession } },
             ],
           },
         );
       } else {
-        tasks = await models.Task.findAll({ include: ['assigned', 'tags', 'status', 'creator'] });
+        const {
+          nameTask, tagName, statusName, assignedName,
+        } = ctx.query;
+        console.log('nameTask: ', nameTask, ' tagName: ', tagName, ' statusName: ', statusName, ' assignedName: ', assignedName);
+
+        tasks = await models.Task.findAll(
+          {
+            where: { name: { [Op.substring]: nameTask } },
+            include: [
+              {
+                model: models.User,
+                as: 'assigned',
+                where: {
+                  [Op.or]: [
+                    { firstName: { [Op.substring]: assignedName } },
+                    { lastName: { [Op.substring]: assignedName } },
+                  ],
+                },
+              },
+              { model: models.Tag, as: 'tags', where: { name: { [Op.substring]: tagName } } },
+              { model: models.TaskStatus, as: 'status', where: { name: { [Op.substring]: statusName } } },
+              { model: models.User, as: 'creator' },
+            ],
+          },
+        );
       }
       // console.log('tasks: ', tasks);
       ctx.render('tasks', { tasks });
@@ -89,8 +110,8 @@ export default (router) => {
         console.log('Set creator error: ', e);
       }
 
-      const userAssigned = await models.User.findOne({ where: { id: form.assigned } });
-      task.setAssigned(userAssigned);
+      // const userAssigned = await models.User.findOne({ where: { id: form.assigned } });
+      // task.setAssigned(userAssigned);
 
       const [statusNew, created] = await models.TaskStatus.findOrCreate({ where: { name: 'New' } });
       console.log('Satus new created: ', created);
