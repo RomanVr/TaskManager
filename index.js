@@ -53,6 +53,28 @@ export default () => {
   }));
   app.use(serve(path.join(__dirname, 'public')));
 
+  app.use(async (ctx, next) => {
+    console.log('IN ROUTE !!!');
+    console.log('method: ', ctx.request.method, ' URL: ', ctx.request.url, ' params: ', ctx.params);
+    const { url, method } = ctx.request;
+
+    const urlAccessFree = new Set(['/', '/session', '/session/new', '/users', '/users/new']);
+
+    if (urlAccessFree.has(url)) {
+      await next();
+      return;
+    }
+
+    if (method === 'GET') {
+      if (ctx.session.userId === undefined) {
+        ctx.flash.set('You need to autenticate!');
+        ctx.redirect('/');
+        return;
+      }
+    }
+    await next();
+  });
+
   app.use(koalogger());
   const router = new KoaRouter();
   addRoutes(router);
