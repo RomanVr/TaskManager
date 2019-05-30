@@ -86,75 +86,68 @@ export default (router) => {
       ctx.render('tasks/task', { f: buildFormObj(task) });
     }) // создание новой задачи
     .post('tasks', '/tasks', async (ctx) => {
-      const userIdsession = ctx.session.userId;
-      if (!userIdsession) {
-        ctx.flash.set('You need to autenticate!');
-        ctx.redirect('/');
-        return;
-      }
+      // const userIdsession = ctx.session.userId;
       const { request: { body: { form } } } = ctx;
+      form.creatorId = ctx.session.userId;
       console.log(`form data: ${JSON.stringify(form)}`);
       // console.log('body data: ', JSON.stringify(ctx.request.body));
 
-      console.log('tagsForm: ', form.tags);
+      // console.log('tagsForm: ', form.tags);
       const regComma = /\s*,\s*/;
       const tagsName = form.tags.split(regComma);
       console.log('tagsName: ', tagsName);
       const task = models.Task.build(form);
 
-      const userCreator = await models.User.findOne({ where: { id: userIdsession } });
-      try {
-        task.setCreator(userCreator);
-        console.log('Task build: ', JSON.stringify(task));
-      } catch (e) {
-        console.log('Set creator error: ', e);
-      }
-
-      // const userAssigned = await models.User.findOne({ where: { id: form.assigned } });
-      // task.setAssigned(userAssigned);
-
-      const [statusNew, created] = await models.TaskStatus.findOrCreate({ where: { name: 'New' } });
-      console.log('Satus new created: ', created);
-      try {
-        task.setStatus(statusNew);
-      } catch (e) {
-        console.log('Set status error: ', e);
-      }
+      const [statusNew] = await models.TaskStatus.findOrCreate({ where: { name: 'New' } });
+      // console.log('Satus new created: ', created);
+      // try {
+      task.setStatus(statusNew);
+      // } catch (e) {
+      //   console.log('Set status error: ', e);
+      // }
       try {
         await task.save();
 
-        const tagsPromises = tagsName.map(async (nameTag) => {
-          let tag = await models.Tag.findOne({ where: { name: nameTag } });
-          if (tag === null) {
-            tag = await models.Tag.create({ name: nameTag });
-          }
-          return tag;
-        });
+        // version is work!!!
+        // const tagsPromises = tagsName.map(async (nameTag) => {
+        //   let tag = await models.Tag.findOne({ where: { name: nameTag } });
+        //   if (tag === null) {
+        //     tag = await models.Tag.create({ name: nameTag });
+        //   }
+        //   return tag;
+        // });
+        //
+        // const tags = await Promise.all(tagsPromises);
 
+
+        // version is work with one tag!!!
         // const [tagOne] = await models.Tag.findOrCreate({ where: { name: 'simple' } });
         // const tags = [tagOne];
+
+
         // -- version 1 error: SQLITE_BUSY: data base is locked
         // const tagsPromises = tagsName.map(async (nameTag) => {
         //   const [tag, createdTag] = await models.Tag.findOrCreate({ where: { name: nameTag } });
-        //   console.log('tag created: ', createdTag, ' name', nameTag);
-        //   await task.addTags([tag]);
+        //   console.log('tag created: ', createdTag, ' name: ', nameTag);
+        //   return tag;
         // });
-        const tags = await Promise.all(tagsPromises);
+        //
+        // const tags = await Promise.all(tagsPromises);
+        // console.log('tags: ', tags);
 
-        console.log('tags: ', tags);
+        const tags = await Promise.all(tagsName.map(async (nameTag) => {
+          const [tag, createdTag] = await models.Tag.findOrCreate({ where: { name: nameTag } });
+          console.log('tag created: ', createdTag, ' name: ', nameTag);
+          return tag;
+        }));
 
         await task.addTags(tags);
 
-        // const [tag, createdTag]
-        //    = await models.Tag.findOrCreate({ where: { name: tagsName[0] } });
-        // console.log('tag created: ', createdTag, ' name', tagsName[0]);
-        // await task.addTags([tag]);
-
-        console.log('task save: ', task.get({ include: ['status', 'creator', 'tags'] }));
+        // console.log('task save: ', task.get({ include: ['status', 'creator', 'tags'] }));
         ctx.flash.set('Task has been created');
         ctx.redirect(router.url('tasks'));
       } catch (e) {
-        console.log('Error new Task: ', e);
+        // console.log('Error new Task: ', e);
         ctx.render('tasks/new', { f: buildFormObj(task, e) });
       }
     }) // форма редактирования задачи

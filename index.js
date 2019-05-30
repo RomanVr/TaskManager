@@ -56,7 +56,7 @@ export default () => {
   app.use(async (ctx, next) => {
     console.log('IN ROUTE !!!');
     console.log('method: ', ctx.request.method, ' URL: ', ctx.request.url, ' params: ', ctx.params);
-    const { url, method } = ctx.request;
+    const { url } = ctx.request;
 
     const urlAccessFree = new Set(['/', '/session', '/session/new', '/users', '/users/new']);
 
@@ -65,13 +65,12 @@ export default () => {
       return;
     }
 
-    if (method === 'GET') {
-      if (ctx.session.userId === undefined) {
-        ctx.flash.set('You need to autenticate!');
-        ctx.redirect('/');
-        return;
-      }
+    if (ctx.session.userId === undefined) {
+      ctx.flash.set('You need to autenticate!');
+      ctx.redirect('/');
+      return;
     }
+
     await next();
   });
 
