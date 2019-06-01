@@ -24,8 +24,7 @@ export default (router) => {
         ctx.redirect(router.url('root'));
         return;
       }
-      console.log('Register fail!!!');
-      // flash
+      // console.log('Register fail!!!');
       console.log('flash: ', ctx.flash);
       ctx.flash.set('email or password were wrong');
       ctx.session.userEmail = email;

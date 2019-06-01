@@ -4,9 +4,9 @@ import buildFormObj from '../lib/formObjectBuilder';
 export default (router) => {
   router // просмотр
     .get('users', '/users', async (ctx) => {
-      console.log('in GET /users');
+      // console.log('in GET /users');
       const users = await models.User.findAll();
-      console.log(`Users: ${JSON.stringify(users)}`);
+      // console.log(`Users: ${JSON.stringify(users)}`);
       ctx.render('users', { users });
     })// форма создания
     .get('newUser', '/users/new', async (ctx) => {
@@ -15,9 +15,9 @@ export default (router) => {
     })// создание
     .post('users', '/users', async (ctx) => {
       const { request: { body: { form } } } = ctx;
-      console.log(`body data: ${JSON.stringify(form)}`);
+      // console.log(`body data: ${JSON.stringify(form)}`);
       const user = models.User.build(form);
-      console.log(`user post: ${JSON.stringify(user)}`);
+      // console.log(`user post: ${JSON.stringify(user)}`);
       try {
         await user.save();
         // flash
@@ -32,8 +32,8 @@ export default (router) => {
       // console.log('Session userId: ', userIdsession);
       const userIdsession = ctx.session.userId;
       const { id: userId } = ctx.params;
-      if (!userIdsession || userIdsession.toString() !== userId) {
-        ctx.flash.set('You need to autenticate!');
+      if (userIdsession.toString() !== userId) {
+        ctx.flash.set("You can't do it!");
         ctx.redirect('/');
         return;
       }
@@ -43,7 +43,7 @@ export default (router) => {
           id: userId,
         },
       });
-      console.log(`user for delete: ${JSON.stringify(user)}`);
+      // console.log(`user for delete: ${JSON.stringify(user)}`);
       await models.User.destroy({
         where: {
           id: user.id,
@@ -59,14 +59,14 @@ export default (router) => {
           id: userId,
         },
       });
-      console.log(`user for path: ${JSON.stringify(user)}`);
+      // console.log(`user for path: ${JSON.stringify(user)}`);
       ctx.render('users/edit', { f: buildFormObj(user) });
     })// редактирование
     .patch('editUserPatch', '/users/:id', async (ctx) => {
       const userIdsession = ctx.session.userId;
       // console.log('Session userId: ', userIdsession);
       const { id: userId } = ctx.params;
-      if (!userIdsession || userIdsession.toString() !== userId) {
+      if (userIdsession.toString() !== userId) {
         ctx.flash.set('You need to autenticate!');
         ctx.redirect(router.url('root'));
         return;
@@ -77,12 +77,12 @@ export default (router) => {
           id: userId,
         },
       });
-      console.log('/////////////////////////');
-      console.log(`user for path: ${JSON.stringify(user)}`);
-      console.log('/////////////////////////');
+      // console.log('/////////////////////////');
+      // console.log(`user for path: ${JSON.stringify(user)}`);
+      // console.log('/////////////////////////');
       try {
         await user.update(form);
-        console.log('Update success!');
+        // console.log('Update success!');
         ctx.flash.set('Has been updated');
         ctx.redirect(router.url('root'));
       } catch (e) {

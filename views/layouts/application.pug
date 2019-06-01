@@ -7,7 +7,7 @@ html(lang='en')
    meta(name='viewport' content='width=device-width, initial-scale=1')
    script(src='/assets/main.js')
   body
-    nav.navbar.navbar-expand-sm.navbar-light.bg-secondary
+    nav.navbar.navbar-expand-sm.navbar-light.fixed-top.bg-secondary
       a.navbar-brand.text-white(href="/") Task Manager
       button.navbar-toggler.text-white(type='button' data-toggle='collapse' data-target='#collapsibleNavbar')
         span.navbar-toggler-icon.text-white
@@ -20,14 +20,6 @@ html(lang='en')
               a.nav-link.text-white(href=urlForRouter('tasks')) Tasks
         ul.navbar-nav.navbar-right
           if isSignedIn()
-            //- li.nav-item.btn-group
-            //-   button.nav-link.btn.btn-secondary.text-white Logged in as 
-            //-     span.text-info
-            //-       kbd #{userFullName}
-            //-   button.nav-link.btn.btn-secondary.dropdown-toggle.dropdown-toggle-split(type='button' data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
-            //-     .dropdown-menu
-            //-       a.dropdown-item(href=`/users/${userId}/edit`) Edit                
-            //-       a.dropdown-item(href=`/users/${userId}` data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?') Delete
             li.nav-item.dropdown
               a.nav-link.text-white.dropdown-toggle(data-toggle='dropdown' role='button' href='#' aria-haspopup='true' aria-expanded='false')
                 | Logged in as 
@@ -43,7 +35,7 @@ html(lang='en')
               a.nav-link.text-white(href=urlForRouter('newSession')) Sign In
             li.nav-item
               a.nav-link.text-white(href=urlForRouter('newUser')) Sign Up
-    .container-flex.ml-2.mr-2.mt-2
+    .container-flex.mx-2(style='margin-top:80px')
       - const msg = flash.get()
       if msg
         .alert.alert-info.alert-dismissible.m-3(role='alert')= msg
