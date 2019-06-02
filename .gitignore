@@ -4,4 +4,4 @@ dist
 coverage
 .env
 db.*
-public/assets
+/public/assets/
