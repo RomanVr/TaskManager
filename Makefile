@@ -20,6 +20,9 @@ lint:
 test:
 		npm run test
 
+testc:
+		npm test -- --coverage
+
 test-coverage:
 		npm test -- --coverage
 

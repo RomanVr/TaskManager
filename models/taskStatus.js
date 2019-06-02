@@ -1,8 +1,6 @@
 import { Model } from 'sequelize';
 import statuses from '../lib/taskStatus';
 
-console.log('statuses: ', statuses);
-
 export default (sequelize, DataTypes) => {
   class TaskStatus extends Model {}
 
