@@ -12,7 +12,7 @@ export default (router) => {
       await task.removeTag(tag);
       ctx.redirect(`/tasks/${task.id}`);
     })// новый tag
-    .post('tag', '/tags/:taskId', async (ctx) => {
+    .post('newTag', '/tags/:taskId', async (ctx) => {
       logRoute('In POST tag');
       const { taskId } = ctx.params;
       logRoute('Task id: ', taskId);

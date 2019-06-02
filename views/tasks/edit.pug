@@ -5,14 +5,14 @@ block content
     .row.d-flex
       .col-lg-2.text-center
         .list-group.text-md-left
-          a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href='/tasks/new')            
+          a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href= urlForRouter('newTask'))            
             span.d-none.d-md-inline New Task
-          a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href=`/tasks/users/${userId}`)            
+          a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href= urlForRouter('tasks','', { query: { meTask: 'yes' } }))            
             span.d-none.d-md-inline Me Tasks
       .col-lg-10.border-1
         p.text-center Edit task, created by 
           span.text-info #{f.object.creator.fullName}
-        +formFor(f, { url: `/tasks/${f.object.id}`, method: 'patch' })
+        +formFor(f, { url: urlForRouter('editTaskPatch', f.object.id), method: 'patch' })
           .row.d-flex
             .col-lg-10
               +input(f, 'name')

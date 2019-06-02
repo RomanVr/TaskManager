@@ -8,16 +8,16 @@ html(lang='en')
    script(src='/assets/main.js')
   body
     nav.navbar.navbar-expand-sm.navbar-light.fixed-top.bg-secondary
-      a.navbar-brand.text-white(href="/") Task Manager
+      a.navbar-brand.text-white(href= urlForRouter('root')) Task Manager
       button.navbar-toggler.text-white(type='button' data-toggle='collapse' data-target='#collapsibleNavbar')
         span.navbar-toggler-icon.text-white
       div.collapse.navbar-collapse#collapsibleNavbar
         ul.navbar-nav.mr-auto
           li.nav-item.active
-            a.nav-link.text-white(href=urlForRouter('users')) Users
+            a.nav-link.text-white(href= urlForRouter('users')) Users
           if isSignedIn()
             li.nav-item
-              a.nav-link.text-white(href=urlForRouter('tasks')) Tasks
+              a.nav-link.text-white(href= urlForRouter('tasks')) Tasks
         ul.navbar-nav.navbar-right
           if isSignedIn()
             li.nav-item.dropdown
@@ -26,8 +26,8 @@ html(lang='en')
                 span.text-info
                     kbd #{userFullName}
               .dropdown-menu.bg-secondary
-                a.dropdown-item(href=`/users/${userId}/edit`) Edit                
-                a.dropdown-item(href=`/users/${userId}` data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?') Delete                              
+                a.dropdown-item(href= urlForRouter('editUser', userId)) Edit                
+                a.dropdown-item(href= urlForRouter('deleteUser', userId) data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?') Delete                              
             li.nav-item
               a.nav-link.text-white(href= urlForRouter('session') data-method='delete' rel='nofollow' data-confirm='You want to log out?') Sign Out              
           else

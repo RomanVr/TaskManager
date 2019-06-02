@@ -5,9 +5,9 @@ block content
     .row.d-flex
       .col-md-2.float-left.text-center
         .list-group.card.text-md-left
-          a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href=urlForRouter('newTask'))            
+          a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href= urlForRouter('newTask'))            
             span.d-none.d-md-inline New Task
-          a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href='/tasks?meTask=yes')            
+          a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href= urlForRouter('tasks','', { query: { meTask: 'yes' } }))      
             span.d-none.d-md-inline Me Tasks
       .col-md-8.border-1
         table.table.table-striped.table-bordered.rounded.jumbotron
@@ -25,7 +25,7 @@ block content
                 each task in tasks
                   tr          
                     td
-                      a(href=`/tasks/${task.id}`)= task.name
+                      a(href= urlForRouter('task', task.id))= task.name
                     if task.assigned
                       td= task.assigned.fullName
                     else
@@ -35,7 +35,7 @@ block content
       .col-md-2.float-left.bg-ligth
         .list-group.border-1.d-flex
           span.list-group-item.text-center Filters:
-          form(action='/tasks' method='get')
+          form(action= urlForRouter('tasks') method='get')
             .form-group.list-group-item.d-inline-block
               label Name task
               input.form-control(name='nameTask' type='text')
