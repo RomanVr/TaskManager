@@ -1,19 +1,25 @@
 import _ from 'lodash';
 import models from '../models';
 import buildFormObj from '../lib/formObjectBuilder';
+import { logRoute } from '../lib/logger';
 
 export default (router) => {
   router // список задач
     .get('tasks', '/tasks', async (ctx) => {
-      const userIdsession = ctx.session.userId;
+      logRoute('In GET /tasks');
       const { Op } = models.Sequelize;
-      console.log('in Get /tasks');
-      console.log('Query params: ', ctx.query, ' type: ', typeof ctx.query, ' keys: ', Object.keys(ctx.query).length);
-      let tasks;
+
       if (_.isEmpty(ctx.query)) {
-        tasks = await models.Task.findAll({ include: ['assigned', 'tags', 'status', 'creator'] });
-      } else if (!_.isEmpty(ctx.query.meTask)) {
-        tasks = await models.Task.findAll(
+        logRoute('No filters');
+        const tasks = await models.Task.findAll({ include: ['assigned', 'tags', 'status', 'creator'] });
+        ctx.render('tasks', { tasks });
+        return;
+      }
+
+      if (!_.isEmpty(ctx.query.meTask)) {
+        logRoute('Me tasks filter');
+        const userIdsession = ctx.session.userId;
+        const tasks = await models.Task.findAll(
           {
             include: [
               { model: models.User, as: 'assigned' },
@@ -23,44 +29,44 @@ export default (router) => {
             ],
           },
         );
-      } else {
-        const {
-          nameTask, tagName, statusName, assignedName,
-        } = ctx.query;
-        console.log('nameTask: ', nameTask, ' tagName: ', tagName, ' statusName: ', statusName, ' assignedName: ', assignedName);
-
-        tasks = await models.Task.findAll(
-          {
-            where: { name: { [Op.substring]: nameTask } },
-            include: [
-              {
-                model: models.User,
-                as: 'assigned',
-                where: {
-                  [Op.or]: [
-                    { firstName: { [Op.substring]: assignedName } },
-                    { lastName: { [Op.substring]: assignedName } },
-                  ],
-                },
-              },
-              { model: models.Tag, as: 'tags', where: { name: { [Op.substring]: tagName } } },
-              { model: models.TaskStatus, as: 'status', where: { name: { [Op.substring]: statusName } } },
-              { model: models.User, as: 'creator' },
-            ],
-          },
-        );
+        ctx.render('tasks', { tasks });
+        return;
       }
-      // console.log('tasks: ', tasks);
+      const {
+        nameTask, tagName, statusName, assignedName,
+      } = ctx.query;
+      logRoute('nameTask: ', nameTask, ' tagName: ', tagName, ' statusName: ', statusName, ' assignedName: ', assignedName);
+
+      const tasks = await models.Task.findAll(
+        {
+          where: { name: { [Op.substring]: nameTask } },
+          include: [
+            {
+              model: models.User,
+              as: 'assigned',
+              where: {
+                [Op.or]: [
+                  { firstName: { [Op.substring]: assignedName } },
+                  { lastName: { [Op.substring]: assignedName } },
+                ],
+              },
+            },
+            { model: models.Tag, as: 'tags', where: { name: { [Op.substring]: tagName } } },
+            { model: models.TaskStatus, as: 'status', where: { name: { [Op.substring]: statusName } } },
+            { model: models.User, as: 'creator' },
+          ],
+        },
+      );
       ctx.render('tasks', { tasks });
     }) // форма для создания новой задачи
     .get('newTask', '/tasks/new', async (ctx) => {
-      console.log('In newTask');
+      logRoute('In GET newTask');
       const task = models.Task.build();
       const users = await models.User.findAll();
       ctx.render('tasks/new', { f: buildFormObj(task), data: { users } });
     }) // форма просмотра задачи
     .get('task', '/tasks/:id', async (ctx) => {
-      console.log('In Task');
+      logRoute('In GET Task');
       const { id: taskId } = ctx.params;
       const task = await models.Task.findOne({
         where: { id: taskId },
@@ -69,20 +75,20 @@ export default (router) => {
       ctx.render('tasks/task', { f: buildFormObj(task) });
     }) // создание новой задачи
     .post('tasks', '/tasks', async (ctx) => {
+      logRoute('In POST tasks');
       const { request: { body: { form } } } = ctx;
       form.creatorId = ctx.session.userId;
-      console.log(`form data: ${JSON.stringify(form)}`);
+      logRoute(`form data: ${JSON.stringify(form)}`);
       // console.log('tagsForm: ', form.tags);
       const regComma = /\s*,\s*/;
       const tagsName = form.tags.split(regComma);
-      console.log('tagsName: ', tagsName);
+      logRoute('tagsName: ', tagsName);
       const task = models.Task.build(form);
 
       const [statusNew] = await models.TaskStatus.findOrCreate({ where: { name: 'New' } });
       task.setStatus(statusNew);
       try {
         await task.save();
-
         // version is work!!!
         const tagsPromises = tagsName.map(async (nameTag) => {
           let tag = await models.Tag.findOne({ where: { name: nameTag } });
@@ -94,11 +100,9 @@ export default (router) => {
 
         const tags = await Promise.all(tagsPromises);
 
-
         // version is work with one tag!!!
         // const [tagOne] = await models.Tag.findOrCreate({ where: { name: 'simple' } });
         // const tags = [tagOne];
-
 
         // -- version 1 error: SQLITE_BUSY: data base is locked
         // const tagsPromises = tagsName.map(async (nameTag) => {
@@ -112,16 +116,15 @@ export default (router) => {
 
         await task.addTags(tags);
 
-        // console.log('task save: ', task.get({ include: ['status', 'creator', 'tags'] }));
         ctx.flash.set('Task has been created');
         ctx.redirect(router.url('tasks'));
       } catch (e) {
-        // console.log('Error new Task: ', e);
+        logRoute('Save task with Error!!!');
         ctx.render('tasks/new', { f: buildFormObj(task, e) });
       }
     }) // форма редактирования задачи
     .get('editTask', '/tasks/:id/edit', async (ctx) => {
-      // console.log('In edit Task');
+      logRoute('In edit Task');
       const { id: taskId } = ctx.params;
 
       const task = await models.Task.findOne({
@@ -134,27 +137,32 @@ export default (router) => {
       ctx.render('tasks/edit', { f: buildFormObj(task), data: { users, statuses } });
     }) // редактирование задачи
     .patch('editTaskPatch', '/tasks/:id', async (ctx) => {
-      const { request: { body: { form } } } = ctx;
-      console.log(`form data: ${JSON.stringify(form)}`);
+      logRoute('In PATCH task');
       const { id: taskId } = ctx.params;
+      logRoute(' Id task: ', taskId);
+      const { request: { body: { form } } } = ctx;
+      logRoute(`form data: ${JSON.stringify(form)}`);
+
       const task = await models.Task.findOne({
         where: { id: taskId },
       });
-      console.log(task.get({ plain: true }));
-      await task.update(form);
-      ctx.redirect(`/tasks/${taskId}`);
+      try {
+        await task.update(form);
+        ctx.flash.set('Has been updated');
+        ctx.redirect(`/tasks/${taskId}`);
+      } catch (e) {
+        logRoute('Update tasks with Error!!!');
+        ctx.redirect(`/tasks/${taskId}/edit`, { f: buildFormObj(task, e) });
+      }
     }) // удаление задачи
     .delete('deleteTask', '/tasks/:id', async (ctx) => {
+      logRoute('In DELETE tasks');
       const userIdsession = ctx.session.userId;
-      // console.log('Session userId: ', userIdsession);
       const { id: taskId } = ctx.params;
-
-      const task = await models.Task.findOne({
-        where: { id: taskId },
-        include: ['creator'],
-      });
-
-      if (userIdsession.toString() !== task.creator.id.toString()) {
+      logRoute('Id task: ', taskId);
+      const task = await models.Task.findOne({ where: { id: taskId } });
+      logRoute('Creator id: ', task.creatorId);
+      if (userIdsession.toString() !== task.creatorId.toString()) {
         ctx.flash.set('You are not autorized to remove this task!');
         ctx.redirect(router.url('tasks'));
         return;
@@ -164,6 +172,7 @@ export default (router) => {
           id: task.id,
         },
       });
+      ctx.flash.set('Task has been deleted!');
       ctx.redirect(router.url('tasks'));
     });
 };

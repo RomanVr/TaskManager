@@ -1,6 +1,16 @@
 start:
 		npm run nodemon -- --exec babel-node src/bin/server.js
 
+debugApp:
+	DEBUG=app npm run nodemon -- --exec babel-node src/bin/server.js
+
+debugRoutes:
+	DEBUG=routes npm run nodemon -- --exec babel-node src/bin/server.js
+
+debugAll:
+	DEBUG=routes,app npm run nodemon -- --exec babel-node src/bin/server.js
+
+
 install:
 		npm install
 

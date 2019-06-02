@@ -1,4 +1,4 @@
-import '../../container';
+import { logApp } from '../../container';
 import solution from '../..';
 import models from '../../models';
 import taskStatuses from '../../lib/taskStatus';
@@ -18,7 +18,6 @@ models.sequelize.sync()
   })
   .then(() => {
     solution().listen(PORT, () => {
-      /* eslint-disable no-console */
-      console.log(`Server was started on '${PORT}'`);
+      logApp(`Server was started on '${PORT}'`);
     });
   });

@@ -12,6 +12,7 @@ import Rollbar from 'rollbar';
 import 'dotenv'; // run file
 import _ from 'lodash';
 
+import { logApp } from './lib/logger';
 import addRoutes from './routes';
 
 export default () => {
@@ -45,7 +46,7 @@ export default () => {
 
   app.use(bodyParser());
   app.use(methodOverride((req) => {
-    // console.log(`req.body: ${JSON.stringify(req.body)}`);
+    logApp(`req.body: ${JSON.stringify(req.body)}`);
     if (req.body && typeof req.body === 'object' && '_method' in req.body) {
       return req.body._method;// eslint-disable-line
     }
@@ -54,23 +55,25 @@ export default () => {
   app.use(serve(path.join(__dirname, 'public')));
 
   app.use(async (ctx, next) => {
-    console.log('IN ROUTE !!!');
-    console.log('method: ', ctx.request.method, ' URL: ', ctx.request.url, ' params: ', ctx.params);
+    logApp('IN ROUTE constraint check');
+    logApp('method: ', ctx.request.method, ' URL: ', ctx.request.url);
     const { url } = ctx.request;
 
     const urlAccessFree = new Set(['/', '/session', '/session/new', '/users', '/users/new']);
 
     if (urlAccessFree.has(url)) {
+      logApp('Free access');
       await next();
       return;
     }
 
     if (ctx.session.userId === undefined) {
+      logApp('Access failed!!!');
       ctx.flash.set('You need to autenticate!');
       ctx.redirect('/');
       return;
     }
-
+    logApp('Access confirmed');
     await next();
   });
 
