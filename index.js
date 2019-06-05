@@ -56,7 +56,7 @@ export default () => {
 
   app.use(async (ctx, next) => {
     logApp('IN ROUTE constraint check');
-    logApp('method: ', ctx.request.method, ' URL: ', ctx.request.url);
+    logApp('method: ', ctx.request.method, ' URL: ', ctx.request.url, ' User Id: ', ctx.session.userId);
     const { url } = ctx.request;
 
     const urlAccessFree = new Set(['/', '/session', '/session/new', '/users', '/users/new']);
