@@ -18,10 +18,10 @@ lint:
 		npx eslint .
 
 test:
-		npm run test
+		DEBUG=routes,app npm run test
 
 testc:
-		npm test -- --coverage
+		DEBUG=routes,app npm test -- --coverage
 
 test-coverage:
 		npm test -- --coverage

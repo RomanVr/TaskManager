@@ -1,12 +1,14 @@
 import request from 'supertest';
 import matchers from 'jest-supertest-matchers';
 
+import db from '../models';
 import app from '..';
 
 describe('requests', () => {
   let server;
 
-  beforeAll(() => {
+  beforeAll(async () => {
+    await db.sequelize.sync({ force: true });
     expect.extend(matchers);
   });
 
@@ -14,10 +16,20 @@ describe('requests', () => {
     server = app().listen();
   });
 
-  it('GET 200', async () => {
-    const res = await request.agent(server)
+  it('Root, GET 200', async () => {
+    const response = await request.agent(server)
       .get('/');
-    expect(res).toHaveHTTPStatus(200);
+    expect(response).toHaveHTTPStatus(200);
+  });
+
+  it('Session new, GET 200', async () => {
+    await request.agent(server).get('/session/new').expect(200);
+  });
+
+  it('User new, GET 200', async () => {
+    const response = await request.agent(server)
+      .get('/users/new');
+    expect(response).toHaveHTTPStatus(200);
   });
 
   afterEach((done) => {
