@@ -84,6 +84,11 @@ export default () => {
   addRoutes(router);
   app.use(router.routes());
 
+  app.use((ctx) => {
+    ctx.response.status = 404;
+    ctx.render('404');
+  });
+
   const pug = new Pug({
     viewPath: path.join(__dirname, 'views'),
     basedir: path.join(__dirname, 'views'),

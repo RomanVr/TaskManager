@@ -65,14 +65,18 @@ export default (router) => {
       const users = await models.User.findAll();
       ctx.render('tasks/new', { f: buildFormObj(task), data: { users } });
     }) // форма просмотра задачи
-    .get('task', '/tasks/:id', async (ctx) => {
+    .get('task', '/tasks/:id', async (ctx, next) => {
       logRoute('In GET Task');
       const { id: taskId } = ctx.params;
       const task = await models.Task.findOne({
         where: { id: taskId },
         include: ['creator', 'tags', 'assigned', 'status'],
       });
-      ctx.render('tasks/task', { f: buildFormObj(task) });
+      if (task) {
+        ctx.render('tasks/task', { f: buildFormObj(task) });
+        return;
+      }
+      next();
     }) // создание новой задачи
     .post('tasks', '/tasks', async (ctx) => {
       logRoute('In POST tasks');
@@ -123,7 +127,7 @@ export default (router) => {
         ctx.render('tasks/new', { f: buildFormObj(task, e) });
       }
     }) // форма редактирования задачи
-    .get('editTask', '/tasks/:id/edit', async (ctx) => {
+    .get('editTask', '/tasks/:id/edit', async (ctx, next) => {
       logRoute('In edit Task');
       const { id: taskId } = ctx.params;
 
@@ -131,10 +135,13 @@ export default (router) => {
         where: { id: taskId },
         include: ['tags', 'assigned', 'status', 'creator'],
       });
-
-      const users = await models.User.findAll();
-      const statuses = await models.TaskStatus.findAll();
-      ctx.render('tasks/edit', { f: buildFormObj(task), data: { users, statuses } });
+      if (task) {
+        const users = await models.User.findAll();
+        const statuses = await models.TaskStatus.findAll();
+        ctx.render('tasks/edit', { f: buildFormObj(task), data: { users, statuses } });
+        return;
+      }
+      next();
     }) // редактирование задачи
     .patch('editTaskPatch', '/tasks/:id', async (ctx) => {
       logRoute('In PATCH task');
