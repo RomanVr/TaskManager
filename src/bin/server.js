@@ -1,5 +1,5 @@
 import { logApp } from '../../container';
-import solution from '../..';
+import app from '../..';
 import models from '../../models';
 import taskStatuses from '../../lib/taskStatus';
 
@@ -17,7 +17,7 @@ models.sequelize.sync()
     });
   })
   .then(() => {
-    solution().listen(PORT, () => {
+    app().listen(PORT, () => {
       logApp(`Server was started on '${PORT}'`);
     });
   });

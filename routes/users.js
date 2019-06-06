@@ -24,7 +24,7 @@ export default (router) => {
         ctx.flash.set('User has been created');
         ctx.redirect(router.url('root'));
       } catch (e) {
-        logRoute('Create user with Error!!!');
+        logRoute('Create user with Error!!!, ', e.message);
         ctx.render('users/new', { f: buildFormObj(user, e) });
       }
     })// удаление

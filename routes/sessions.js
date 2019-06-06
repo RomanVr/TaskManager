@@ -20,9 +20,10 @@ export default (router) => {
       });
       logRoute('User to register:\n', user.get({ plain: true }));
       if (user && user.passwordDigest === encrypt(password)) {
-        logRoute('Registration successful!');
+        logRoute('Registration successfull!');
         ctx.session.userId = user.id;
         ctx.session.userFullName = user.fullName;
+        // ctx.render('welcome');
         ctx.redirect(router.url('root'));
         return;
       }
