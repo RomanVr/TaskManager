@@ -26,15 +26,15 @@ mixin textarea(f, property)
     if f.errors[property]
       .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
 
-mixin select(f, property, data, propertyData)
-  - const valueId = f.object[property] === undefined ? '' : f.object[property].id
-  - const valueData = f.object[property] === undefined ? '' : f.object[property][propertyData]
+mixin select(f, property, data, propertyInData)
+  - const propertyId = f.object[property] ? f.object[property].id : ''
+  - const popertyValue = f.object[property] ? f.object[property][propertyInData] : ''
   .form-group(class= (f.errors[property] && 'has-danger'))
     label= property
     select.form-control(name= getInputName(f, `${property}Id`))
-      option.selected(value= valueId)= valueData
+      option.selected(value= propertyId)= popertyValue
       each elem in data
-        option(value= elem.id)= elem[propertyData]        
+        option(value= elem.id)= elem[propertyInData]        
     if f.errors[property]
       .form-control-feedback= f.errors[property].map(({ message }) => message).join('. ')
       

@@ -12,14 +12,16 @@ export default (router) => {
     })
     .post('session', '/session', async (ctx) => {
       logRoute('In POST session!');
-      const { email, password } = ctx.request.body.form;
+      const { request: { body: { form } } } = ctx;
+      logRoute('form data: ', form);
       const user = await models.User.findOne({
         where: {
-          email,
+          email: form.email,
         },
       });
-      logRoute('User to register:\n', user.get({ plain: true }));
-      if (user && user.passwordDigest === encrypt(password)) {
+
+      if (user && user.passwordDigest === encrypt(form.password)) {
+        logRoute('User to register:\n', user.get({ plain: true }));
         logRoute('Registration successfull!');
         ctx.session.userId = user.id;
         ctx.session.userFullName = user.fullName;
@@ -29,7 +31,7 @@ export default (router) => {
       }
       logRoute('Registration fail!');
       ctx.flash.set('email or password were wrong');
-      ctx.session.userEmail = email;
+      ctx.session.userEmail = form.email;
       ctx.redirect(router.url('newSession'));
     })
     .delete('session', '/session', (ctx) => {

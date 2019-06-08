@@ -7,6 +7,9 @@ export default (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     description: DataTypes.STRING,
   }, {
@@ -42,6 +45,9 @@ export default (sequelize, DataTypes) => {
       foreignKey: {
         name: 'statusId',
         allowNull: false,
+        validate: {
+          notEmpty: true,
+        },
       },
     });
   };

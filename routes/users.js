@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import models from '../models';
 import buildFormObj from '../lib/formObjectBuilder';
 import { logRoute } from '../lib/logger';
@@ -24,6 +25,7 @@ export default (router) => {
         ctx.flash.set('User has been created');
         ctx.redirect(router.url('root'));
       } catch (e) {
+        logRoute('Errors: ', _.groupBy(e.errors, 'path'));
         logRoute('Create user with Error!!!, ', e.message);
         ctx.render('users/new', { f: buildFormObj(user, e) });
       }

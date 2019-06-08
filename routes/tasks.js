@@ -73,6 +73,7 @@ export default (router) => {
         include: ['creator', 'tags', 'assigned', 'status'],
       });
       if (task) {
+        logRoute('Task: ', task.get({ plain: true }));
         ctx.render('tasks/task', { f: buildFormObj(task) });
         return;
       }
@@ -85,46 +86,64 @@ export default (router) => {
       logRoute(`form data: ${JSON.stringify(form)}`);
       // console.log('tagsForm: ', form.tags);
       const regComma = /\s*,\s*/;
-      const tagsName = form.tags.split(regComma);
+      const tagsName = form.tags === '' ? undefined : form.tags.split(regComma);
       logRoute('tagsName: ', tagsName);
-      const task = models.Task.build(form);
+      const formProperty = Object.keys(form).reduce((acc, key) => {
+        if (form[key]) {
+          return { ...acc, [key]: form[key] };
+        }
+        return { ...acc };
+      }, {});
+      logRoute(`formProperty data: ${JSON.stringify(formProperty)}`);
+      const task = models.Task.build(formProperty);
+      logRoute('Task build: \n', task.get({ plain: true }));
+      // experiment
+      // if (!task.assignedId) {
+      //   logRoute('delete property assignedId!');
+      //   delete task.assignedId;
+      //   logRoute('Task build: \n', task.get({ plain: true }));
+      // }
 
       const [statusNew] = await models.TaskStatus.findOrCreate({ where: { name: 'New' } });
       task.setStatus(statusNew);
       try {
         await task.save();
-        // version is work!!!
-        const tagsPromises = tagsName.map(async (nameTag) => {
-          let tag = await models.Tag.findOne({ where: { name: nameTag } });
-          if (tag === null) {
-            tag = await models.Tag.create({ name: nameTag });
-          }
-          return tag;
-        });
+        if (tagsName) {
+          // version is work!!!
+          const tagsPromises = tagsName.map(async (nameTag) => {
+            let tag = await models.Tag.findOne({ where: { name: nameTag } });
+            if (tag === null) {
+              tag = await models.Tag.create({ name: nameTag });
+            }
+            return tag;
+          });
 
-        const tags = await Promise.all(tagsPromises);
+          const tags = await Promise.all(tagsPromises);
 
-        // version is work with one tag!!!
-        // const [tagOne] = await models.Tag.findOrCreate({ where: { name: 'simple' } });
-        // const tags = [tagOne];
+          // version is work with one tag!!!
+          // const [tagOne] = await models.Tag.findOrCreate({ where: { name: 'simple' } });
+          // const tags = [tagOne];
 
-        // -- version 1 error: SQLITE_BUSY: data base is locked
-        // const tagsPromises = tagsName.map(async (nameTag) => {
-        //   const [tag, createdTag] = await models.Tag.findOrCreate({ where: { name: nameTag } });
-        //   console.log('tag created: ', createdTag, ' name: ', nameTag);
-        //   return tag;
-        // });
-        //
-        // const tags = await Promise.all(tagsPromises);
-        // console.log('tags: ', tags);
+          // -- version 1 error: SQLITE_BUSY: data base is locked
+          // const tagsPromises = tagsName.map(async (nameTag) => {
+          //   const [tag, createdTag] = await models.Tag
+          //    .findOrCreate({ where: { name: nameTag } });
+          //   console.log('tag created: ', createdTag, ' name: ', nameTag);
+          //   return tag;
+          // });
+          //
+          // const tags = await Promise.all(tagsPromises);
+          // console.log('tags: ', tags);
 
-        await task.addTags(tags);
-
+          await task.addTags(tags);
+        }
         ctx.flash.set('Task has been created');
         ctx.redirect(router.url('tasks'));
       } catch (e) {
-        logRoute('Save task with Error!!!');
-        ctx.render('tasks/new', { f: buildFormObj(task, e) });
+        // logRoute('Errors: ', _.groupBy(e.errors, 'path'));
+        logRoute('Save task with Error!!!', e);
+        const users = await models.User.findAll();
+        ctx.render('tasks/new', { f: buildFormObj(task, e), data: { users } });
       }
     }) // форма редактирования задачи
     .get('editTask', '/tasks/:id/edit', async (ctx, next) => {
@@ -135,15 +154,16 @@ export default (router) => {
         where: { id: taskId },
         include: ['tags', 'assigned', 'status', 'creator'],
       });
-      if (task) {
-        const users = await models.User.findAll();
-        const statuses = await models.TaskStatus.findAll();
-        ctx.render('tasks/edit', { f: buildFormObj(task), data: { users, statuses } });
+      if (!task) {
+        next();
         return;
       }
-      next();
+      logRoute('Task edit: ', task.get({ plain: true }));
+      const users = await models.User.findAll();
+      const statuses = await models.TaskStatus.findAll();
+      ctx.render('tasks/edit', { f: buildFormObj(task), data: { users, statuses } });
     }) // редактирование задачи
-    .patch('editTaskPatch', '/tasks/:id', async (ctx) => {
+    .patch('editTaskPatch', '/tasks/:id', async (ctx, next) => {
       logRoute('In PATCH task');
       const { id: taskId } = ctx.params;
       logRoute(' Id task: ', taskId);
@@ -153,6 +173,10 @@ export default (router) => {
       const task = await models.Task.findOne({
         where: { id: taskId },
       });
+      if (!task) {
+        next();
+        return;
+      }
       try {
         await task.update(form);
         ctx.flash.set('Has been updated');
@@ -162,13 +186,17 @@ export default (router) => {
         ctx.redirect(`/tasks/${taskId}/edit`, { f: buildFormObj(task, e) });
       }
     }) // удаление задачи
-    .delete('deleteTask', '/tasks/:id', async (ctx) => {
+    .delete('deleteTask', '/tasks/:id', async (ctx, next) => {
       logRoute('In DELETE tasks');
       const userIdsession = ctx.session.userId;
       const { id: taskId } = ctx.params;
       logRoute('Id task: ', taskId);
       const task = await models.Task.findOne({ where: { id: taskId } });
       logRoute('Creator id: ', task.creatorId);
+      if (!task) {
+        next();
+        return;
+      }
       if (userIdsession.toString() !== task.creatorId.toString()) {
         ctx.flash.set('You are not autorized to remove this task!');
         ctx.redirect(router.url('tasks'));
