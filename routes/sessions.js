@@ -25,7 +25,7 @@ export default (router) => {
         logRoute('Registration successfull!');
         ctx.session.userId = user.id;
         ctx.session.userFullName = user.fullName;
-        // ctx.render('welcome');
+        // ctx.render('welcome/index');
         ctx.redirect(router.url('root'));
         return;
       }

@@ -40,28 +40,22 @@ export default (router) => {
         ctx.redirect(router.url('root'));
         return;
       }
-      try {
-        const user = await models.User.findOne({
-          where: {
-            id: userId,
-          },
-        });
-        await models.User.destroy({
-          where: {
-            id: user.id,
-          },
-        });
-        logRoute('User delete!');
-        ctx.session = {};
-        ctx.flash.set('User has been deleted!');
-        ctx.redirect(router.url('root'));
-      } catch (e) {
-        logRoute('User delete with Error: ', e.message);
-        ctx.flash.set('User cannot be deleted!');
-        ctx.redirect(router.url('root'));
-      }
+      const user = await models.User.findOne({
+        where: {
+          id: userId,
+        },
+      });
+      await models.User.destroy({
+        where: {
+          id: user.id,
+        },
+      });
+      logRoute('User delete!');
+      ctx.session = {};
+      ctx.flash.set('User has been deleted!');
+      ctx.redirect(router.url('root'));
     })// форма редактирование
-    .get('editUser', '/users/:id/edit', async (ctx) => {
+    .get('editUser', '/users/:id/edit', async (ctx, next) => {
       logRoute('In GET editUser');
       const { id: userId } = ctx.params;
       logRoute('User id: ', userId);
@@ -70,6 +64,10 @@ export default (router) => {
           id: userId,
         },
       });
+      if (!user) {
+        next();
+        return;
+      }
       ctx.render('users/edit', { f: buildFormObj(user) });
     })// редактирование
     .patch('editUserPatch', '/users/:id', async (ctx) => {
