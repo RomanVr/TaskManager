@@ -32,6 +32,7 @@ export default (router) => {
         ctx.render('tasks', { tasks });
         return;
       }
+
       const {
         nameTask, tagName, statusName, assignedName,
       } = ctx.query;
@@ -86,7 +87,7 @@ export default (router) => {
       logRoute(`form data: ${JSON.stringify(form)}`);
       // console.log('tagsForm: ', form.tags);
       const regComma = /\s*,\s*/;
-      const tagsName = form.tags === '' ? undefined : form.tags.split(regComma);
+      const tagsName = form.tagsName === '' ? undefined : form.tags.split(regComma);
       logRoute('tagsName: ', tagsName);
       const formProperty = Object.keys(form).reduce((acc, key) => {
         if (form[key]) {

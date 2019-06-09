@@ -10,6 +10,7 @@ let server;
 let cookie;
 let user;
 let task;
+let status;
 
 describe('Requests without access and authenticate', () => {
   beforeAll(async () => {
@@ -117,7 +118,7 @@ describe('Requests with authenticate', () => {
     };
     user = await db.User.create(fakePerson);
 
-    const [status] = await db.TaskStatus.findOrCreate({ where: { name: 'New' } });
+    [status] = await db.TaskStatus.findOrCreate({ where: { name: 'New' } });
     fakeTask = {
       name: 'test',
       creatorId: user.id,
@@ -257,6 +258,60 @@ describe('Requests with authenticate', () => {
         .get('/tasks')
         .set('cookie', cookie)
         .expect(200);
+    });
+
+    it('GET with query, 200', async () => {
+      await request.agent(server)
+        .get('/tasks')
+        .query({ nameTask: 'test' })
+        .set('cookie', cookie)
+        .expect(200);
+    });
+
+    it('GET with query "MeTask", 200', async () => {
+      await request.agent(server)
+        .get('/tasks')
+        .query({ meTask: 'yes' })
+        .set('cookie', cookie)
+        .expect(200);
+    });
+
+    it('GET new Task, 200', async () => {
+      await request.agent(server)
+        .get('/tasks/new')
+        .set('cookie', cookie)
+        .expect(200);
+    });
+
+    it('GET task id, 200', async () => {
+      await request.agent(server)
+        .get(`/tasks/${task.id}`)
+        .set('cookie', cookie)
+        .expect(200);
+    });
+
+    it('GET task id wron id, 404', async () => {
+      const wrongId = 10;
+      await request.agent(server)
+        .get(`/tasks/${wrongId}`)
+        .set('cookie', cookie)
+        .expect(404);
+    });
+
+    it('POST tasks, 302', async () => {
+      const testTask = {
+        name: 'test',
+        creatorId: user.id,
+        assignedId: user.id,
+        description: 'test',
+        statusId: status.id,
+        tagsName: '',
+      };
+      await request.agent(server)
+        .post('/tasks')
+        .send({ form: testTask })
+        .set('cookie', cookie)
+        .expect(302);
     });
   });
 
