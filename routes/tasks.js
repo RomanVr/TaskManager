@@ -97,12 +97,6 @@ export default (router) => {
       logRoute(`formProperty data: ${JSON.stringify(formProperty)}`);
       const task = models.Task.build(formProperty);
       logRoute('Task build: \n', task.get({ plain: true }));
-      // experiment
-      // if (!task.assignedId) {
-      //   logRoute('delete property assignedId!');
-      //   delete task.assignedId;
-      //   logRoute('Task build: \n', task.get({ plain: true }));
-      // }
 
       const [statusNew] = await models.TaskStatus.findOrCreate({ where: { name: 'New' } });
       task.setStatus(statusNew);

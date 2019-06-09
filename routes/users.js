@@ -40,20 +40,26 @@ export default (router) => {
         ctx.redirect(router.url('root'));
         return;
       }
-      const user = await models.User.findOne({
-        where: {
-          id: userId,
-        },
-      });
-      await models.User.destroy({
-        where: {
-          id: user.id,
-        },
-      });
-      logRoute('User delete!');
-      ctx.session = {};
-      ctx.flash.set('User has been deleted!');
-      ctx.redirect(router.url('root'));
+      try {
+        const user = await models.User.findOne({
+          where: {
+            id: userId,
+          },
+        });
+        await models.User.destroy({
+          where: {
+            id: user.id,
+          },
+        });
+        logRoute('User delete!');
+        ctx.session = {};
+        ctx.flash.set('User has been deleted!');
+        ctx.redirect(router.url('root'));
+      } catch (e) {
+        logRoute('Error deleted user!!!: ', e);
+        ctx.flash.set("You can't do it!");
+        ctx.redirect(router.url('root'));
+      }
     })// форма редактирование
     .get('editUser', '/users/:id/edit', async (ctx, next) => {
       logRoute('In GET editUser');
