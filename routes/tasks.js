@@ -87,7 +87,7 @@ export default (router) => {
       logRoute(`form data: ${JSON.stringify(form)}`);
       // console.log('tagsForm: ', form.tags);
       const regComma = /\s*,\s*/;
-      const tagsName = form.tagsName === '' ? undefined : form.tags.split(regComma);
+      const tagsName = form.tagsName === '' ? undefined : form.tagsName.split(regComma);
       logRoute('tagsName: ', tagsName);
       const formProperty = Object.keys(form).reduce((acc, key) => {
         if (form[key]) {
@@ -167,6 +167,7 @@ export default (router) => {
 
       const task = await models.Task.findOne({
         where: { id: taskId },
+        include: ['tags', 'assigned', 'status', 'creator'],
       });
       if (!task) {
         next();
@@ -177,8 +178,10 @@ export default (router) => {
         ctx.flash.set('Has been updated');
         ctx.redirect(`/tasks/${taskId}`);
       } catch (e) {
-        logRoute('Update tasks with Error!!!');
-        ctx.redirect(`/tasks/${taskId}/edit`, { f: buildFormObj(task, e) });
+        logRoute('Update tasks with Error!!!', e.errors);
+        const users = await models.User.findAll();
+        const statuses = await models.TaskStatus.findAll();
+        ctx.render('tasks/edit', { f: buildFormObj(task, e), data: { users, statuses } });
       }
     }) // удаление задачи
     .delete('deleteTask', '/tasks/:id', async (ctx, next) => {
@@ -187,7 +190,6 @@ export default (router) => {
       const { id: taskId } = ctx.params;
       logRoute('Id task: ', taskId);
       const task = await models.Task.findOne({ where: { id: taskId } });
-      logRoute('Creator id: ', task.creatorId);
       if (!task) {
         next();
         return;
@@ -197,6 +199,7 @@ export default (router) => {
         ctx.redirect(router.url('tasks'));
         return;
       }
+      logRoute('Creator id: ', task.creatorId);
       await models.Task.destroy({
         where: {
           id: task.id,

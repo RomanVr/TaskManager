@@ -31,13 +31,13 @@ describe('Requests without access and authenticate', () => {
   it('Root, GET 200', async () => {
     const response = await request.agent(server)
       .get('/');
-    expect(response).toHaveHTTPStatus(200);
+    await expect(response).toHaveHTTPStatus(200);
   });
 
   it('Wrong enter in auth zone GET, 302', async () => {
     const response = await request.agent(server)
       .get('/tasks');
-    expect(response.headers.location).toEqual('/');
+    await expect(response.headers.location).toEqual('/');
   });
 
   it('Session new, GET 200', async () => {
@@ -55,14 +55,14 @@ describe('Requests without access and authenticate', () => {
   it('User new, GET 200', async () => {
     const response = await request.agent(server)
       .get('/users/new');
-    expect(response).toHaveHTTPStatus(200);
+    await expect(response).toHaveHTTPStatus(200);
   });
 
   it('User save to db, 302', async () => {
     const response = await request.agent(server)
       .post('/users')
       .send({ form: fakePerson });
-    expect(response.status).toEqual(302);
+    await expect(response.status).toEqual(302);
   });
 
   it('User save wrong, 200', async () => {
@@ -76,7 +76,7 @@ describe('Requests without access and authenticate', () => {
     const response = await request.agent(server)
       .post('/session')
       .send({ form: fakePerson });
-    expect(response.headers.location).toEqual('/');
+    await expect(response.headers.location).toEqual('/');
   });
 
   it('Session new, POST 302 Registration fail!', async () => {
@@ -84,8 +84,7 @@ describe('Requests without access and authenticate', () => {
       .post('/session')
       .send({ form: { email: '' } })
       .expect(302);
-    console.log('Location: ', response.headers.location);
-    expect(response.headers.location).toEqual('/session/new');
+    await expect(response.headers.location).toEqual('/session/new');
   });
 
   it('Session DELETE, 200', async () => {
@@ -97,7 +96,7 @@ describe('Requests without access and authenticate', () => {
     const response = await request.agent(server)
       .delete('/session')
       .expect(302);
-    expect(response.headers.location).toEqual('/');
+    await expect(response.headers.location).toEqual('/');
   });
 
   afterEach((done) => {
@@ -155,7 +154,7 @@ describe('Requests with authenticate', () => {
       const response = await request.agent(server)
         .get('/tasks')
         .set('cookie', cookie);
-      expect(response.status).toEqual(200);
+      await expect(response.status).toEqual(200);
     });
 
     it('Wrong URL', async () => {
@@ -185,7 +184,7 @@ describe('Requests with authenticate', () => {
         .send({ form: { lastName: 'n' } })
         .set('cookie', cookie)
         .expect(302);
-      expect(response.headers.location).toEqual('/');
+      await expect(response.headers.location).toEqual('/');
     });
 
     it('User PATCH wron userId, 302', async () => {
@@ -194,7 +193,7 @@ describe('Requests with authenticate', () => {
         .send({ form: { lastName: 'n' } })
         .set('cookie', cookie)
         .expect(302);
-      expect(response.headers.location).toEqual('/');
+      await expect(response.headers.location).toEqual('/');
     });
 
     it('User PATCH wrong update email, 200', async () => {
@@ -248,11 +247,15 @@ describe('Requests with authenticate', () => {
       const response = await request.agent(server)
         .delete(`/tags/${tagTest.id}/${task.id}`)
         .set('cookie', cookie);
-      expect(response.headers.location).toEqual(`/tasks/${task.id}`);
+      await expect(response.headers.location).toEqual(`/tasks/${task.id}`);
     });
   });
 
   describe('Requests Task', () => {
+    const wrongIdtask = 10;
+    let deleteTaskTest;
+    let testTask;
+
     it('GET, 200', async () => {
       await request.agent(server)
         .get('/tasks')
@@ -291,16 +294,31 @@ describe('Requests with authenticate', () => {
     });
 
     it('GET task id wron id, 404', async () => {
-      const wrongId = 10;
       await request.agent(server)
-        .get(`/tasks/${wrongId}`)
+        .get(`/tasks/${wrongIdtask}`)
         .set('cookie', cookie)
         .expect(404);
     });
 
     it('POST tasks, 302', async () => {
-      const testTask = {
+      testTask = {
         name: 'test',
+        creatorId: user.id,
+        assignedId: user.id,
+        description: 'test',
+        statusId: status.id,
+        tagsName: 'test',
+      };
+      await request.agent(server)
+        .post('/tasks')
+        .send({ form: testTask })
+        .set('cookie', cookie)
+        .expect(302);
+    });
+
+    it('POST tasks with constraint, 200', async () => {
+      testTask = {
+        name: '',
         creatorId: user.id,
         assignedId: user.id,
         description: 'test',
@@ -311,7 +329,92 @@ describe('Requests with authenticate', () => {
         .post('/tasks')
         .send({ form: testTask })
         .set('cookie', cookie)
-        .expect(302);
+        .expect(200);
+    });
+
+    it('GET form task edit, 200', async () => {
+      await request.agent(server)
+        .get(`/tasks/${task.id}/edit`)
+        .set('cookie', cookie)
+        .expect(200);
+    });
+
+    it('GET form wrong task edit, 404', async () => {
+      await request.agent(server)
+        .get(`/tasks/${wrongIdtask}/edit`)
+        .set('cookie', cookie)
+        .expect(404);
+    });
+
+    it('PATCH tasks, 302', async () => {
+      const taskEdit = { name: 'newName' };
+      const response = await request.agent(server)
+        .patch(`/tasks/${task.id}`)
+        .send({ form: taskEdit })
+        .set('cookie', cookie);
+      await expect(response.headers.location).toEqual(`/tasks/${task.id}`);
+    });
+
+    it('PATCH tasks wrong task id, 404', async () => {
+      const taskEdit = { name: 'newName' };
+      await request.agent(server)
+        .patch(`/tasks/${wrongIdtask}`)
+        .send({ form: taskEdit })
+        .set('cookie', cookie)
+        .expect(404);
+    });
+
+    it('PATCH tasks wrong name, 200', async () => {
+      const taskEdit = { name: '' };
+      await request.agent(server)
+        .patch(`/tasks/${task.id}`)
+        .send({ form: taskEdit })
+        .set('cookie', cookie)
+        .expect(200);
+    });
+
+    it('DELETE tasks, 302', async () => {
+      deleteTaskTest = {
+        name: 'testDelete',
+        creatorId: user.id,
+        assignedId: user.id,
+        description: 'test',
+        statusId: status.id,
+        tagsName: 'test',
+      };
+      const taskDelete = await db.Task.create(deleteTaskTest);
+      const response = await request.agent(server)
+        .delete(`/tasks/${taskDelete.id}`)
+        .set('cookie', cookie);
+      await expect(response.headers.location).toEqual('/tasks');
+    });
+
+    it('DELETE tasks wrong task id, 404', async () => {
+      await request.agent(server)
+        .delete(`/tasks/${wrongIdtask}`)
+        .set('cookie', cookie)
+        .expect(404);
+    });
+
+    it('DELETE task wron user auth, 302', async () => {
+      const userTest = {
+        lastName: 'lastNametest',
+        firstName: 'firstNameTest',
+        email: 't@test.ru',
+        password: 'test',
+      };
+      const newUser = await db.User.create(userTest);
+      await server.close();
+      server = app().listen();
+      const response = await request.agent(server)
+        .post('/session')
+        .send({ form: newUser });
+      cookie = response.headers['set-cookie'];
+
+      const responseDelete = await request.agent(server)
+        .delete(`/tasks/${task.id}`)
+        .set('cookie', cookie);
+      await expect(responseDelete.headers.location).toEqual('/tasks');
     });
   });
 
