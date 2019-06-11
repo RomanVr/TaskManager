@@ -1,7 +1,14 @@
 import 'bootstrap/dist/js/bootstrap.min';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'jquery-ujs';
+import $ from 'jquery';
 
+// auto hide flash message
+window.setTimeout(() => {
+  $('.alert').fadeTo(500, 0).slideUp(500, (thi) => {
+    $(thi).remove();
+  });
+}, 1000);
 
 // import 'jquery-mask-plugin';
 

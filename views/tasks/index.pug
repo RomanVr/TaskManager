@@ -1,6 +1,10 @@
 extends /layouts/application.pug
 
 block content
+  div.alert.alert-success(role='alert')
+    button.close(type='button' data-dismiss='alert' aria-label='Close')
+      span(aria-hidden='true') &times;
+    | Success!!!
   if isSignedIn()
     .row.d-flex
       .col-md-2.float-left.text-center
