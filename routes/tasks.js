@@ -132,10 +132,9 @@ export default (router) => {
 
           await task.addTags(tags);
         }
-        ctx.flash.set('Task has been created');
+        ctx.flash.set({ message: 'Task has been created', div: 'alert-info' });
         ctx.redirect(router.url('tasks'));
       } catch (e) {
-        // logRoute('Errors: ', _.groupBy(e.errors, 'path'));
         logRoute('Save task with Error!!!', e);
         const users = await models.User.findAll();
         ctx.render('tasks/new', { f: buildFormObj(task, e), data: { users } });
@@ -175,7 +174,7 @@ export default (router) => {
       }
       try {
         await task.update(form);
-        ctx.flash.set('Has been updated');
+        ctx.flash.set({ message: 'Has been updated', div: 'alert-info' });
         ctx.redirect(`/tasks/${taskId}`);
       } catch (e) {
         logRoute('Update tasks with Error!!!', e.errors);
@@ -195,7 +194,7 @@ export default (router) => {
         return;
       }
       if (userIdsession.toString() !== task.creatorId.toString()) {
-        ctx.flash.set('You are not autorized to remove this task!');
+        ctx.flash.set({ message: 'You are not autorized to remove this task!', div: 'alert-danger' });
         ctx.redirect(router.url('tasks'));
         return;
       }
@@ -205,7 +204,7 @@ export default (router) => {
           id: task.id,
         },
       });
-      ctx.flash.set('Task has been deleted!');
+      ctx.flash.set({ message: 'Task has been deleted!', div: 'alert-info' });
       ctx.redirect(router.url('tasks'));
     });
 };

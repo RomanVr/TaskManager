@@ -9,8 +9,6 @@ block content
             span.d-none.d-md-inline New Task
           a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href= urlForRouter('tasks','', { query: { meTask: 'yes' } }))      
             span.d-none.d-md-inline Me Tasks
-          a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href= urlForRouter('statuses'))
-            span.d-none.d-md-inline Statuses
       .col-md-8.border-1
         table.table.table-striped.table-bordered.jumbotron
             thead.thead-dark
@@ -32,15 +30,11 @@ block content
                       a(href= urlForRouter('statusesDelete', status.id) data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?')
                         span.text-danger &times;
       .col-md-2.float-left.bg-ligth
-        //- form(action= urlForRouter('newTag', f.object.id) method='post')
         ul.list-group.border-1.d-flex
           span.list-group-item.text-center New status:
           +formFor(f, { url: urlForRouter('statuses'), method: 'post' })
             .input-group.d-flex.flex-column
               li.list-group-item
                 +input(f, 'name')
-                //- input.form-control(name='form[name]' type='text')
               li.list-group-item.d-flex
                 button.btn.btn-success.flex-fill(type='submit') add
-            //- +button('add')
-          //- form(action='/statuses' method='post')

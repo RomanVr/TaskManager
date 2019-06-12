@@ -38,7 +38,7 @@ html(lang='en')
     .container-flex.mx-2(style='margin-top:80px')
       - const msg = flash.get()
       if msg
-        .alert.alert-info.alert-dismissible.m-3(role='alert')= msg
+        .alert.alert-dismissible.m-3(role='alert' class= msg.div)= msg.message
           button.close(type='button' data-dismiss='alert' aria-label='close')
             span(aria-hidden='true') &times;
       block content

@@ -9,6 +9,8 @@ block content
             span.d-none.d-md-inline New Task
           a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href= urlForRouter('tasks','', { query: { meTask: 'yes' } }))            
             span.d-none.d-md-inline Me Tasks
+          a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href= urlForRouter('statuses'))
+            span.d-none.d-md-inline Statuses
       .col-lg-10.border-1
         p.text-center Edit task, created by 
           span.text-info #{f.object.creator.fullName}

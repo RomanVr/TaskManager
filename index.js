@@ -71,7 +71,7 @@ export default () => {
 
     if (ctx.session.userId === undefined) {
       logApp('Access failed!!!');
-      ctx.flash.set('You need to autenticate!');
+      ctx.flash.set({ message: 'You need to autenticate!', div: 'alert-danger' });
       ctx.redirect('/');
       return;
     }
