@@ -1,0 +1,46 @@
+extends /layouts/application.pug
+
+block content
+  if isSignedIn()
+    .row.d-flex
+      .col-md-2.float-left.text-center
+        .list-group.card.text-md-left
+          a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href= urlForRouter('newTask'))            
+            span.d-none.d-md-inline New Task
+          a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href= urlForRouter('tasks','', { query: { meTask: 'yes' } }))      
+            span.d-none.d-md-inline Me Tasks
+          a.list-group-item.border-1.d-inline-block.bg-ligth.text-dark(href= urlForRouter('statuses'))
+            span.d-none.d-md-inline Statuses
+      .col-md-8.border-1
+        table.table.table-striped.table-bordered.jumbotron
+            thead.thead-dark
+              tr.d-flex
+                th.col-1.text-center id
+                th.col-10 Name
+                th.col-1
+            tbody
+              if statuses.length === 0
+                tr
+                  td.text-center(colspan='4') You have not statuses!
+              esle
+                each status in statuses
+                  tr.d-flex         
+                    td.col-1.text-center= status.id
+                      //- a(href= urlForRouter('status', status.id))= status.id
+                    td.col-10= status.name
+                    td.col-1.text-center
+                      a(href= urlForRouter('statusesDelete', status.id) data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?')
+                        span.text-danger &times;
+      .col-md-2.float-left.bg-ligth
+        //- form(action= urlForRouter('newTag', f.object.id) method='post')
+        ul.list-group.border-1.d-flex
+          span.list-group-item.text-center New status:
+          +formFor(f, { url: urlForRouter('statuses'), method: 'post' })
+            .input-group.d-flex.flex-column
+              li.list-group-item
+                +input(f, 'name')
+                //- input.form-control(name='form[name]' type='text')
+              li.list-group-item.d-flex
+                button.btn.btn-success.flex-fill(type='submit') add
+            //- +button('add')
+          //- form(action='/statuses' method='post')

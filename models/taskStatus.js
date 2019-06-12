@@ -1,5 +1,5 @@
 import { Model } from 'sequelize';
-import statuses from '../lib/taskStatus';
+// import statuses from '../lib/taskStatus';
 
 export default (sequelize, DataTypes) => {
   class TaskStatus extends Model {}
@@ -8,8 +8,9 @@ export default (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
       validate: {
-        isIn: [statuses],
+        notEmpty: true,
       },
     },
   }, {

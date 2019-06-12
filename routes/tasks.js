@@ -80,14 +80,14 @@ export default (router) => {
       }
       next();
     }) // создание новой задачи
-    .post('tasks', '/tasks', async (ctx) => {
+    .post('tasksPost', '/tasks', async (ctx) => {
       logRoute('In POST tasks');
       const { request: { body: { form } } } = ctx;
       form.creatorId = ctx.session.userId;
       logRoute(`form data: ${JSON.stringify(form)}`);
       // console.log('tagsForm: ', form.tags);
       const regComma = /\s*,\s*/;
-      const tagsName = form.tagsName === '' ? undefined : form.tagsName.split(regComma);
+      const tagsName = form.tags === '' ? undefined : form.tags.split(regComma);
       logRoute('tagsName: ', tagsName);
       const formProperty = Object.keys(form).reduce((acc, key) => {
         if (form[key]) {

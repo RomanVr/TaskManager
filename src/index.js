@@ -8,7 +8,7 @@ window.setTimeout(() => {
   $('.alert').fadeTo(500, 0).slideUp(500, (thi) => {
     $(thi).remove();
   });
-}, 1000);
+}, 2000);
 
 // import 'jquery-mask-plugin';
 

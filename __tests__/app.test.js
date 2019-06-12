@@ -307,7 +307,7 @@ describe('Requests with authenticate', () => {
         assignedId: user.id,
         description: 'test',
         statusId: status.id,
-        tagsName: 'test',
+        tags: 'test',
       };
       await request.agent(server)
         .post('/tasks')
@@ -323,7 +323,7 @@ describe('Requests with authenticate', () => {
         assignedId: user.id,
         description: 'test',
         statusId: status.id,
-        tagsName: '',
+        tags: '',
       };
       await request.agent(server)
         .post('/tasks')

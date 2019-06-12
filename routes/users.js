@@ -15,7 +15,7 @@ export default (router) => {
       const user = models.User.build();
       ctx.render('users/new', { f: buildFormObj(user) });
     })// создание
-    .post('users', '/users', async (ctx) => {
+    .post('usersPost', '/users', async (ctx) => {
       logRoute('In POST /users');
       const { request: { body: { form } } } = ctx;
       logRoute(`body data: ${JSON.stringify(form)}`);
