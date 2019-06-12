@@ -418,6 +418,69 @@ describe('Requests with authenticate', () => {
     });
   });
 
+  describe('Requests Statuses', () => {
+    let testTask;
+
+    it('GET, 200', async () => {
+      await request.agent(server)
+        .get('/statuses')
+        .set('cookie', cookie)
+        .expect(200);
+    });
+
+    it('POST, 302', async () => {
+      const nameStatus = 'test';
+      await request.agent(server)
+        .post('/statuses')
+        .send({ form: { name: nameStatus } })
+        .set('cookie', cookie)
+        .expect(302);
+    });
+
+    it('POST whit empty name status, 200', async () => {
+      await request.agent(server)
+        .post('/statuses')
+        .send({ form: { name: '' } })
+        .set('cookie', cookie)
+        .expect(200);
+    });
+
+    it('DELETE, 302', async () => {
+      const nameStatus = 'deleteStatus';
+      const statusTask = await db.TaskStatus.create({ name: nameStatus });
+      await request.agent(server)
+        .delete(`/statuses/${statusTask.id}`)
+        .set('cookie', cookie)
+        .expect(302);
+    });
+
+    it('DELETE wrong status, 404', async () => {
+      const wrongId = 10;
+      await request.agent(server)
+        .delete(`/statuses/${wrongId}`)
+        .set('cookie', cookie)
+        .expect(404);
+    });
+
+    it('DELETE constraint status, 302', async () => {
+      const nameStatus = 'deleteStatus';
+      const testStatus = await db.TaskStatus.create({ name: nameStatus });
+      testTask = {
+        name: 'test',
+        creatorId: user.id,
+        assignedId: user.id,
+        description: 'test',
+        statusId: testStatus.id,
+        tags: 'test',
+      };
+      await db.Task.create(testTask);
+      await request.agent(server)
+        .delete(`/statuses/${testStatus.id}`)
+        .set('cookie', cookie)
+        .expect(302);
+    });
+  });
+
   afterEach((done) => {
     server.close();
     done();
