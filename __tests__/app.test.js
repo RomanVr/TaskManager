@@ -249,6 +249,14 @@ describe('Requests with authenticate', () => {
         .set('cookie', cookie);
       await expect(response.headers.location).toEqual(`/tasks/${task.id}`);
     });
+
+    it('POST empty name tag, 302', async () => {
+      await request.agent(server)
+        .post(`/tags/${task.id}`)
+        .send({ form: { name: '' } })
+        .set('cookie', cookie)
+        .expect(302);
+    });
   });
 
   describe('Requests Task', () => {
