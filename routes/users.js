@@ -99,7 +99,6 @@ export default (router) => {
         ctx.redirect(router.url('root'));
       } catch (e) {
         logRoute('Update user with Error!!!');
-        // ctx.flash.set({ message: `Update user with Error\n${e.message}`, div: 'alert-danger' });
         ctx.render('users/edit', { f: buildFormObj(user, e) });
       }
     });

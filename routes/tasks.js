@@ -175,7 +175,7 @@ export default (router) => {
       try {
         await task.update(form);
         ctx.flash.set({ message: 'Has been updated', div: 'alert-info' });
-        ctx.redirect(`/tasks/${taskId}`);
+        ctx.redirect(router.url('task', taskId));
       } catch (e) {
         logRoute('Update tasks with Error!!!', e.errors);
         const users = await models.User.findAll();

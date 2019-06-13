@@ -5,7 +5,6 @@ import db from '../models';
 import app from '..';
 
 let fakePerson;
-let fakeTask;
 let server;
 let cookie;
 let user;
@@ -118,7 +117,7 @@ describe('Requests with authenticate', () => {
     user = await db.User.create(fakePerson);
 
     [status] = await db.TaskStatus.findOrCreate({ where: { name: 'New' } });
-    fakeTask = {
+    const fakeTask = {
       name: 'test',
       creatorId: user.id,
       assignedId: user.id,
@@ -309,17 +308,45 @@ describe('Requests with authenticate', () => {
     });
 
     it('POST tasks, 302', async () => {
-      testTask = {
+      const testTask1 = {
         name: 'test',
         creatorId: user.id,
         assignedId: user.id,
         description: 'test',
         statusId: status.id,
-        tags: 'test',
+        tags: 'test1, test2',
       };
       await request.agent(server)
         .post('/tasks')
-        .send({ form: testTask })
+        .send({ form: testTask1 })
+        .set('cookie', cookie)
+        .expect(302);
+
+      const testTask2 = {
+        name: 'test',
+        creatorId: user.id,
+        assignedId: user.id,
+        description: 'test',
+        statusId: status.id,
+        tags: 'test1',
+      };
+      await request.agent(server)
+        .post('/tasks')
+        .send({ form: testTask2 })
+        .set('cookie', cookie)
+        .expect(302);
+
+      const testTask3 = {
+        name: 'test',
+        creatorId: user.id,
+        assignedId: user.id,
+        description: 'test',
+        statusId: status.id,
+        tags: '',
+      };
+      await request.agent(server)
+        .post('/tasks')
+        .send({ form: testTask3 })
         .set('cookie', cookie)
         .expect(302);
     });
@@ -366,8 +393,8 @@ describe('Requests with authenticate', () => {
     it('PATCH tasks wrong task id, 404', async () => {
       const taskEdit = { name: 'newName' };
       await request.agent(server)
-        .patch(`/tasks/${wrongIdtask}`)
-        .send({ form: taskEdit })
+        .post(`/tasks/${wrongIdtask}`)
+        .send({ form: taskEdit, _method: 'patch' })
         .set('cookie', cookie)
         .expect(404);
     });

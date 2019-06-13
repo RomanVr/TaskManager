@@ -10,7 +10,7 @@ export default (router) => {
       const tag = await models.Tag.findOne({ where: { id: tagId } });
       const task = await models.Task.findOne({ where: { id: taskId } });
       await task.removeTag(tag);
-      ctx.redirect(`/tasks/${task.id}`);
+      ctx.redirect(router.url('task', task.id));
     })// новый tag
     .post('newTag', '/tags/:taskId', async (ctx) => {
       logRoute('In POST tag');
@@ -27,6 +27,6 @@ export default (router) => {
         logRoute('Add tag with Error!!!');
         ctx.flash.set({ message: `Error \n${e.message}`, div: 'alert-danger' });
       }
-      ctx.redirect(`/tasks/${taskId}`);
+      ctx.redirect(router.url('task', taskId));
     });
 };

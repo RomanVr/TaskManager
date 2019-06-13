@@ -4,7 +4,7 @@ import fs from 'fs';
 import Config from '../config/config';
 import { logApp } from '../lib/logger';
 
-const env = process.env.NODE_ENV || 'development';
+const env = process.env.NODE_ENV;
 logApp('NODE_ENV: ', env);
 const config = Config[env];
 
@@ -15,9 +15,6 @@ sequelize
   .authenticate()
   .then(() => {
     logApp('Success connection!!!');
-  })
-  .catch((err) => {
-    logApp('Failed connection!!!', err);
   });
 const basename = path.basename(__filename);
 fs
