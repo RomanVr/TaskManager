@@ -2,9 +2,11 @@ extends /layouts/application.pug
 
 block content
   p.text-center Create new user
-  +formFor(f, { url: urlForRouter('users'), method: 'post' })
-    +input(f, 'email')
-    +input(f, 'firstName')
-    +input(f, 'lastName')
-    +input(f, 'password', { as: 'password' })
-    +button('Save')
+  .d-flex.justify-content-center
+    .col-6.flex-fill
+      +formFor(f, { url: urlForRouter('users'), method: 'post' })
+        +input(f, 'email')
+        +input(f, 'firstName')
+        +input(f, 'lastName')
+        +input(f, 'password', { as: 'password' })
+        +button('Save')

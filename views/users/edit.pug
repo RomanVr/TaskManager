@@ -1,8 +1,10 @@
 extends /layouts/application.pug
 
 block content
-  +formFor(f, { url: urlForRouter('editUserPatch', userId), method: 'patch' })
-    +input(f, 'email')
-    +input(f, 'firstName')
-    +input(f, 'lastName')
-    +button('Edit')    
+  .d-flex.justify-content-center
+    .col-6.flex-fill
+      +formFor(f, { url: urlForRouter('editUserPatch', userId), method: 'patch' })
+        +input(f, 'email')
+        +input(f, 'firstName')
+        +input(f, 'lastName')
+        +button('Edit')    

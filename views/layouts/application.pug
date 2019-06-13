@@ -25,9 +25,9 @@ html(lang='en')
                 | Logged in as 
                 span.text-info
                     kbd #{userFullName}
-              .dropdown-menu.bg-secondary
-                a.dropdown-item(href= urlForRouter('editUser', userId)) Edit                
-                a.dropdown-item(href= urlForRouter('deleteUser', userId) data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?') Delete                              
+              .dropdown-menu.bg-white
+                a.dropdown-item.text-dark(href= urlForRouter('editUser', userId)) Edit                
+                a.dropdown-item.text-dark(href= urlForRouter('deleteUser', userId) data-method='delete' rel='nofollow' data-confirm='Are you sure you want to delete?') Delete                              
             li.nav-item
               a.nav-link.text-white(href= urlForRouter('session') data-method='delete' rel='nofollow' data-confirm='You want to log out?') Sign Out              
           else

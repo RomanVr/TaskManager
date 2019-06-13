@@ -1,7 +1,9 @@
 extends /layouts/application.pug
 
 block content
-  +formFor(f, { url: urlForRouter('session'), method: 'post'})
-    +input(f, 'email')
-    +input(f, 'password', { as: 'password' })
-    +button('Lod In')
+  .d-flex.justify-content-center
+    .col-6.flex-fill
+      +formFor(f, { url: urlForRouter('session'), method: 'post'})
+        +input(f, 'email')
+        +input(f, 'password', { as: 'password' })
+        +button('Lod In')

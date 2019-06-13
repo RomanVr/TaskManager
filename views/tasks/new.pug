@@ -2,9 +2,11 @@ extends /layouts/application.pug
 
 block content
   p.text-center Create new task
-  +formFor(f, { url: urlForRouter('tasks'), method: 'post' })
-    +input(f, 'name')
-    +textarea(f, 'description')
-    +select(f, 'assigned', data.users, 'fullName')  
-    +input(f, 'tags')
-    +button('Save')
+  .d-flex.justify-content-center
+    .col-6.flex-fill
+      +formFor(f, { url: urlForRouter('tasks'), method: 'post' })
+        +input(f, 'name')
+        +textarea(f, 'description')
+        +select(f, 'assigned', data.users, 'fullName')  
+        +input(f, 'tags')
+        +button('Save')
