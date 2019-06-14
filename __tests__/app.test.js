@@ -244,7 +244,7 @@ describe('Requests with authenticate', () => {
       const tagTest = await db.Tag.create({ name: 'test' });
       await task.addTag(tagTest);
       const response = await request.agent(server)
-        .delete(`/tags/${tagTest.id}/${task.id}`)
+        .delete(`/tags/${tagTest.id}/tasks/${task.id}`)
         .set('cookie', cookie);
       await expect(response.headers.location).toEqual(`/tasks/${task.id}`);
     });

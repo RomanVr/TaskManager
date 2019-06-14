@@ -3,7 +3,7 @@ import { logRoute } from '../lib/logger';
 
 export default (router) => {
   router// удалить tag
-    .delete('deleteTag', '/tags/:tagId/:taskId', async (ctx) => {
+    .delete('deleteTag', '/tags/:tagId/tasks/:taskId', async (ctx) => {
       logRoute('In DELETE Tag!!!');
       const { tagId, taskId } = ctx.params;
       logRoute('tagId: ', tagId, ' taskId: ', taskId);
