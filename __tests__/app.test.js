@@ -186,7 +186,7 @@ describe('Requests with authenticate', () => {
       await expect(response.headers.location).toEqual('/');
     });
 
-    it('User PATCH wron userId, 302', async () => {
+    it('User PATCH wrong userId, 302', async () => {
       const response = await request.agent(server)
         .patch('/users/3')
         .send({ form: { lastName: 'n' } })
@@ -431,7 +431,7 @@ describe('Requests with authenticate', () => {
         .expect(404);
     });
 
-    it('DELETE task wron user auth, 302', async () => {
+    it('DELETE task wrong user auth, 302', async () => {
       const userTest = {
         lastName: 'lastNametest',
         firstName: 'firstNameTest',

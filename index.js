@@ -1,6 +1,7 @@
 import path from 'path';
 import Koa from 'koa';
 import KoaRouter from 'koa-router';
+import RoutePath from 'koa-path-match';
 import Pug from 'koa-pug';
 import koalogger from 'koa-logger';
 import bodyParser from 'koa-bodyparser';
@@ -75,9 +76,22 @@ export default () => {
       ctx.redirect('/');
       return;
     }
+
     logApp('Access confirmed');
     await next();
   });
+
+  const routePath = new RoutePath();
+
+  app.use(routePath('/users/:id(\\d+)', async (ctx, next) => {
+    logApp('Path for routing: ', ctx.request.url);
+    if (ctx.params.id === ctx.state.userId.toString()) {
+      await next();
+      return;
+    }
+    ctx.flash.set({ message: "You can't do it!", div: 'alert-danger' });
+    ctx.redirect('/');
+  }));
 
   app.use(koalogger());
   const router = new KoaRouter();
