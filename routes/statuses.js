@@ -15,7 +15,7 @@ export default (router) => {
       const status = await models.TaskStatus.build(form);
       try {
         await status.save();
-        ctx.flash.set({ message: 'Status has been created', div: 'alert-info' });
+        ctx.flash.set({ info: 'Status has been created' });
         ctx.redirect(router.url('statuses'));
       } catch (e) {
         logRoute('Save status with error');
@@ -32,11 +32,11 @@ export default (router) => {
       }
       try {
         await models.TaskStatus.destroy({ where: { id: status.id } });
-        ctx.flash.set({ message: 'Status has been deleted!', div: 'alert-info' });
+        ctx.flash.set({ info: 'Status has been deleted!' });
         ctx.redirect(router.url('statuses'));
       } catch (e) {
         logRoute('Status has not been deleted!: \n', e.message);
-        ctx.flash.set({ message: `Status has not been deleted! \n${e.message}`, div: 'alert-danger' });
+        ctx.flash.set({ danger: `Status has not been deleted! \n${e.message}` });
         ctx.redirect(router.url('statuses'));
       }
     });

@@ -25,7 +25,7 @@ export default (router) => {
         return;
       }
       logRoute('Registration fail!');
-      ctx.flash.set({ message: 'Email or password were wrong', div: 'alert-danger' });
+      ctx.flash.set({ danger: 'Email or password were wrong' });
       ctx.session.userEmail = form.email;
       ctx.redirect(router.url('newSession'));
     })

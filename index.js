@@ -72,7 +72,7 @@ export default () => {
 
     if (ctx.session.userId === undefined) {
       logApp('Access failed!!!');
-      ctx.flash.set({ message: 'You need to autenticate!', div: 'alert-danger' });
+      ctx.flash.set({ danger: 'You need to autenticate!' });
       ctx.redirect('/');
       return;
     }
@@ -84,12 +84,12 @@ export default () => {
   const routePath = new RoutePath();
 
   app.use(routePath('/users/:id(\\d+)', async (ctx, next) => {
-    logApp('Path for routing: ', ctx.request.url);
+    logApp('Path for routing Users: ', ctx.request.url);
     if (ctx.params.id === ctx.state.userId.toString()) {
       await next();
       return;
     }
-    ctx.flash.set({ message: "You can't do it!", div: 'alert-danger' });
+    ctx.flash.set({ danger: "You can't do it!" });
     ctx.redirect('/');
   }));
 

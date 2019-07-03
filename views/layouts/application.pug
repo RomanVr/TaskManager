@@ -36,9 +36,10 @@ html(lang='en')
             li.nav-item
               a.nav-link.text-white(href=urlForRouter('newUser')) Sign Up
     .container-flex.mx-2(style='margin-top:80px')
-      - const msg = flash.get()
-      if msg
-        .alert.alert-dismissible.m-3(role='alert' class= msg.div)= msg.message
-          button.close(type='button' data-dismiss='alert' aria-label='close')
-            span(aria-hidden='true') &times;
+      - const msgs = flash.get()
+      if msgs
+        each value, key in msgs
+          .alert.alert-dismissible.m-3(role='alert' class=`alert-${key}`)= value
+            button.close(type='button' data-dismiss='alert' aria-label='close')
+              span(aria-hidden='true') &times;
       block content

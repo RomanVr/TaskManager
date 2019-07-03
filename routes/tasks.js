@@ -115,7 +115,7 @@ export default (router) => {
 
         await task.addTags(tags);
 
-        ctx.flash.set({ message: 'Task has been created', div: 'alert-info' });
+        ctx.flash.set({ info: 'Task has been created' });
         ctx.redirect(router.url('tasks'));
       } catch (e) {
         logRoute('Save task with Error!!!', e);
@@ -153,7 +153,7 @@ export default (router) => {
       }
       try {
         await task.update(form);
-        ctx.flash.set({ message: 'Has been updated', div: 'alert-info' });
+        ctx.flash.set({ info: 'Has been updated' });
         ctx.redirect(router.url('task', taskId));
       } catch (e) {
         logRoute('Update tasks with Error!!!', e.errors);
@@ -171,7 +171,7 @@ export default (router) => {
         return;
       }
       if (userIdsession.toString() !== task.creatorId.toString()) {
-        ctx.flash.set({ message: 'You are not autorized to remove this task!', div: 'alert-danger' });
+        ctx.flash.set({ danger: 'You are not autorized to remove this task!' });
         ctx.redirect(router.url('tasks'));
         return;
       }
@@ -180,7 +180,7 @@ export default (router) => {
           id: task.id,
         },
       });
-      ctx.flash.set({ message: 'Task has been deleted!', div: 'alert-info' });
+      ctx.flash.set({ info: 'Task has been deleted!' });
       ctx.redirect(router.url('tasks'));
     });
 };

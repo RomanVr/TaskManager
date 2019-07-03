@@ -20,7 +20,7 @@ export default (router) => {
         await task.addTag(tag);
       } catch (e) {
         logRoute('Add tag with Error!!!');
-        ctx.flash.set({ message: `Error \n${e.message}`, div: 'alert-danger' });
+        ctx.flash.set({ danger: `Error \n${e.message}` });
       }
       ctx.redirect(router.url('task', taskId));
     });

@@ -18,7 +18,7 @@ export default (router) => {
       const user = models.User.build(form);
       try {
         await user.save();
-        ctx.flash.set({ message: 'User has been created', div: 'alert-info' });
+        ctx.flash.set({ info: 'User has been created' });
         ctx.redirect(router.url('root'));
       } catch (e) {
         logRoute('Errors: ', _.groupBy(e.errors, 'path'));
@@ -41,11 +41,11 @@ export default (router) => {
         });
         logRoute('User delete!');
         ctx.session = {};
-        ctx.flash.set({ message: 'User has been deleted!', div: 'alert-info' });
+        ctx.flash.set({ info: 'User has been deleted!' });
         ctx.redirect(router.url('root'));
       } catch (e) {
         logRoute('Error deleted user!!!: ', e);
-        ctx.flash.set({ message: `You can't do it!\n${e.message}`, div: 'alert-danger' });
+        ctx.flash.set({ danger: `You can't do it!\n${e.message}` });
         ctx.redirect(router.url('root'));
       }
     })// форма редактирование
@@ -72,7 +72,7 @@ export default (router) => {
       });
       try {
         await user.update(form);
-        ctx.flash.set({ message: 'Has been updated', div: 'alert-info' });
+        ctx.flash.set({ info: 'Has been updated' });
         ctx.redirect(router.url('root'));
       } catch (e) {
         ctx.render('users/edit', { f: buildFormObj(user, e) });
