@@ -170,11 +170,11 @@ describe('Requests with authenticate', () => {
         .expect(200);
     });
 
-    it('User edit wrong userId GET, 404', async () => {
+    it('User edit wrong userId GET, 302', async () => {
       await request.agent(server)
         .get('/users/3/edit')
         .set('cookie', cookie)
-        .expect(404);
+        .expect(302);
     });
 
     it('User PATCH, 302', async () => {

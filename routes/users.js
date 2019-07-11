@@ -4,7 +4,16 @@ import buildFormObj from '../lib/formObjectBuilder';
 import { logRoute } from '../lib/logger';
 
 export default (router) => {
-  router // просмотр
+  router
+    .use('/users/:id(\\d+)', async (ctx, next) => {
+      logRoute('Path for routing Users: ', ctx.request.url);
+      if (ctx.params.id === ctx.state.userId.toString()) {
+        await next();
+        return;
+      }
+      ctx.flash.set({ danger: "You can't do it!" });
+      ctx.redirect('/');
+    }) // просмотр
     .get('users', '/users', async (ctx) => {
       const users = await models.User.findAll();
       ctx.render('users', { users });
@@ -49,17 +58,13 @@ export default (router) => {
         ctx.redirect(router.url('root'));
       }
     })// форма редактирование
-    .get('editUser', '/users/:id/edit', async (ctx, next) => {
+    .get('editUser', '/users/:id/edit', async (ctx) => {
       const { id: userId } = ctx.params;
       const user = await models.User.findOne({
         where: {
           id: userId,
         },
       });
-      if (!user) {
-        next();
-        return;
-      }
       ctx.render('users/edit', { f: buildFormObj(user) });
     })// редактирование
     .patch('editUserPatch', '/users/:id', async (ctx) => {

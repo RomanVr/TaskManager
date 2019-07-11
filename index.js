@@ -1,7 +1,6 @@
 import path from 'path';
 import Koa from 'koa';
 import KoaRouter from 'koa-router';
-import RoutePath from 'koa-path-match';
 import Pug from 'koa-pug';
 import koalogger from 'koa-logger';
 import bodyParser from 'koa-bodyparser';
@@ -80,18 +79,6 @@ export default () => {
     logApp('Access confirmed');
     await next();
   });
-
-  const routePath = new RoutePath();
-
-  app.use(routePath('/users/:id(\\d+)', async (ctx, next) => {
-    logApp('Path for routing Users: ', ctx.request.url);
-    if (ctx.params.id === ctx.state.userId.toString()) {
-      await next();
-      return;
-    }
-    ctx.flash.set({ danger: "You can't do it!" });
-    ctx.redirect('/');
-  }));
 
   app.use(koalogger());
   const router = new KoaRouter();
