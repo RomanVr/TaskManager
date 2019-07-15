@@ -3,17 +3,18 @@ import models from '../models';
 import buildFormObj from '../lib/formObjectBuilder';
 import { logRoute } from '../lib/logger';
 
+const requireAuth = async (ctx, next) => {
+  logRoute('Path for routing Users: ', ctx.request.url);
+  if (ctx.params.id === ctx.state.userId.toString()) {
+    await next();
+    return;
+  }
+  ctx.flash.set({ danger: "You can't do it!" });
+  ctx.redirect('/');
+};
+
 export default (router) => {
-  router
-    .use('/users/:id(\\d+)', async (ctx, next) => {
-      logRoute('Path for routing Users: ', ctx.request.url);
-      if (ctx.params.id === ctx.state.userId.toString()) {
-        await next();
-        return;
-      }
-      ctx.flash.set({ danger: "You can't do it!" });
-      ctx.redirect('/');
-    }) // просмотр
+  router // просмотр
     .get('users', '/users', async (ctx) => {
       const users = await models.User.findAll();
       ctx.render('users', { users });
@@ -35,7 +36,7 @@ export default (router) => {
         ctx.render('users/new', { f: buildFormObj(user, e) });
       }
     })// удаление
-    .delete('deleteUser', '/users/:id', async (ctx) => {
+    .delete('deleteUser', '/users/:id', requireAuth, async (ctx) => {
       const { id: userId } = ctx.params;
       try {
         const user = await models.User.findOne({
@@ -58,7 +59,7 @@ export default (router) => {
         ctx.redirect(router.url('root'));
       }
     })// форма редактирование
-    .get('editUser', '/users/:id/edit', async (ctx) => {
+    .get('editUser', '/users/:id/edit', requireAuth, async (ctx) => {
       const { id: userId } = ctx.params;
       const user = await models.User.findOne({
         where: {
@@ -67,7 +68,7 @@ export default (router) => {
       });
       ctx.render('users/edit', { f: buildFormObj(user) });
     })// редактирование
-    .patch('editUserPatch', '/users/:id', async (ctx) => {
+    .patch('editUserPatch', '/users/:id', requireAuth, async (ctx) => {
       const { id: userId } = ctx.params;
       const { request: { body: { form } } } = ctx;
       const user = await models.User.findOne({
